@@ -14,5 +14,7 @@ Imports:
   dbplyr,
   dplyr, 
   forcats,
+  magrittr,
+  rlang,
   RSQLite,
   tidyr
