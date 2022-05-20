@@ -32,6 +32,12 @@ connect_to_db <- function(db_file) {
 # TODO: how to have good examples that work to a db that lies elsewhere?
   # add toy database in the /data/? also for tests?
 
+# see the following links:
+# https://cran.r-project.org/web/packages/dittodb/vignettes/dittodb.html
+# https://stackoverflow.com/questions/56474392/testthat-set-up-database-connection-available-to-all-tests
+# https://dittodb.jonkeane.com/
+# https://github.com/ropensci/dittodb
+
 #' Load links between MAG and ProQuest
 #'
 #' @param conn A DBI connection.
@@ -60,7 +66,7 @@ get_linked_graduates <- function(conn, keep_unique = TRUE) {
     where_stmt <- paste0(
       "WHERE goid NOT IN (",
       paste0(drop_links, collapse = ", "),
-      "AND link_score > 0.7"
+      " ) AND link_score > 0.7"
     )
   } else {
     where_stmt <- "WHERE links_score > 0.7"
@@ -71,7 +77,7 @@ get_linked_graduates <- function(conn, keep_unique = TRUE) {
       FROM current_links ",
     where_stmt)
 
-  links <- dplyr::tbl(conn, dbplyr::sql(links))
+  links <- dplyr::tbl(conn, dbplyr::sql(query_links))
 
   return(links)
 }
