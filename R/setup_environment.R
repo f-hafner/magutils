@@ -46,8 +46,6 @@ connect_to_db <- function(db_file) {
 #' @return A lazy query of linked goid-AuthorId.
 #' @export
 #'
-#' @examples
-#'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 get_linked_graduates <- function(conn, keep_unique = TRUE) {
@@ -82,6 +80,37 @@ get_linked_graduates <- function(conn, keep_unique = TRUE) {
   return(links)
 }
 
+
+#' Define gender based on first name.
+#'
+#' @param conn A DBI connection.
+#'
+#' @param table A lazily evaluated table sourced from `conn`.
+#' @param drop_missing If TRUE, drops records without clear gender assigned.
+#' @export
+#'
+#' @importFrom rlang .data
+#' @importFrom magrittr %>%
+define_gender <- function(conn, table, drop_missing) {
+
+  names_gender <- dplyr::tbl(conn, "FirstNamesGender")
+  # TODO: check whether Firstname in table?
+
+  table <- table %>%
+    dplyr::inner_join(names_gender, by = "FirstName") %>%
+    dplyr::mutate(gender = dplyr::case_when(
+      .data$ProbabilityFemale >= threshold_prob_female ~ "Female",
+      .data$ProbabilityFemale <= 1 - threshold_prob_female ~ "Male")
+    ) %>%
+    dplyr::select(-.data$ProbabilityFemale)
+
+  if (drop_missing) {
+    table <- table %>%
+      dplyr::filter(!is.na(.data$gender))
+  }
+
+  return(table)
+}
 
 
 
