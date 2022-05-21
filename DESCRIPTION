@@ -13,8 +13,6 @@ Imports:
   DBI,
   dbplyr,
   dplyr, 
-  forcats,
   magrittr,
   rlang,
-  RSQLite,
-  tidyr
+  RSQLite

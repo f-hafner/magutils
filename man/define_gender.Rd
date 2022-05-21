@@ -9,7 +9,7 @@ define_gender(conn, table, drop_missing)
 \arguments{
 \item{conn}{A DBI connection.}
 
-\item{table}{A lazily evaluated table sourced from conn.}
+\item{table}{A lazily evaluated table sourced from \code{conn}.}
 
 \item{drop_missing}{If TRUE, drops records without clear gender assigned.}
 }

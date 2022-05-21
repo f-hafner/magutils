@@ -15,6 +15,3 @@ A DBI::dbConnect object
 \description{
 Connect to the database
 }
-\examples{
-con <- connect_to_db("mydb.sqlite")
-}
