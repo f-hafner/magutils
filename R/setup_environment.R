@@ -2,8 +2,8 @@
 # Define some variables used in functions below
 threshold_prob_female <- 0.8
 
-degree_year_start <- 1985
-degree_year_end <- 2005
+# degree_year_start <- 1985
+# degree_year_end <- 2005
 
 
 geemp_fields <- c("geology", "geography", "environmental science",
@@ -46,7 +46,7 @@ connect_to_db <- function(db_file) {
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_linked_graduates <- function(conn, keep_unique = TRUE) {
+get_graduate_links <- function(conn, keep_unique = TRUE) {
 
   if (keep_unique) {
     drop_links <- dplyr::tbl(conn, "current_links") %>%
@@ -85,17 +85,22 @@ get_linked_graduates <- function(conn, keep_unique = TRUE) {
 #'
 #' @param table A lazily evaluated table sourced from `conn`.
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
+#' @param firstname_left Column containing the firstname in `table` and to be used for joining gender on.
+#'
+#' @return `table` augmented by a gender column.
 #' @export
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-define_gender <- function(conn, table, drop_missing) {
+define_gender <- function(conn, table, firstname_left, drop_missing) {
 
-  names_gender <- dplyr::tbl(conn, "FirstNamesGender")
+  names_gender <- dplyr::tbl(conn, "FirstNamesGender") %>%
+    dplyr::select(-.data$PersonCount)
   # TODO: check whether Firstname in table?
 
   table <- table %>%
-    dplyr::inner_join(names_gender, by = "FirstName") %>%
+    dplyr::inner_join(names_gender,
+                      by = stats::setNames(nm = firstname_left, "FirstName")) %>%
     dplyr::mutate(gender = dplyr::case_when(
       .data$ProbabilityFemale >= threshold_prob_female ~ "Female",
       .data$ProbabilityFemale <= 1 - threshold_prob_female ~ "Male")
@@ -110,6 +115,42 @@ define_gender <- function(conn, table, drop_missing) {
   return(table)
 }
 
+
+#' Source PhD graduates
+#'
+#' @param conn A DBI connection.
+#' @param start_year Lowest graduation year to consider. Default: 1985.
+#' @param end_year Highets graduation year to consider. Default: 2005.
+#'
+#' @return A lazily evaluated table with U.S. PhD graduates and their gender
+#' @export
+#' @importFrom rlang .data
+#' @importFrom magrittr %>%
+authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
+
+  query_keep_us <- "
+    SELECT university_id
+    FROM pq_unis
+    WHERE location LIKE '%United States%'
+  "
+  us_universities <- dplyr::tbl(conn, dbplyr::sql(query_keep_us))
+
+  d <- dplyr::tbl(conn, "pq_authors") %>%
+    dplyr::inner_join(us_universities, by = "university_id") %>%
+    dplyr::filter(.data$degree_year >= start_year
+                  & .data$degree_year <= end_year) %>%
+    dplyr::select(.data$goid, .data$degree_year,
+                  .data$university_id, firstname_pq = .data$firstname)
+
+  d <- define_gender(conn = conn,
+                     table = d,
+                     firstname_left = "firstname_pq",
+                     drop_missing = TRUE) %>%
+    dplyr::select(-.data$firstname_pq)
+
+  return(d)
+
+}
 
 
 

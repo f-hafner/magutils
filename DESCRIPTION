@@ -15,4 +15,5 @@ Imports:
   dplyr, 
   magrittr,
   rlang,
-  RSQLite
+  RSQLite,
+  stats

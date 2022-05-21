@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of magutils is to facilitate loading and extractin data from a
+The goal of magutils is to facilitate loading and extracting data from a
 database with records from Microsoft Academic Graph and ProQuest
 Dissertations. **Work in progress.**
 
@@ -28,5 +28,5 @@ If you have access to an external database with the data, you can do
 library(magutils)
 
 # con <- connect_to_db("myfile.sqlite")
-# d_graduates <- get_linked_graduates(con)
+# d_graduates <- authors_proquest(con)
 ```
