@@ -2,9 +2,6 @@
 # Define some variables used in functions below
 threshold_prob_female <- 0.8
 
-# degree_year_start <- 1985
-# degree_year_end <- 2005
-
 
 geemp_fields <- c("geology", "geography", "environmental science",
                   "mathematics", "computer science", "engineering",
@@ -15,9 +12,9 @@ lps_fields <- c("biology", "psychology", "sociology", "political science")
 
 #' Connect to the database
 #'
-#' @param db_file full name (including path) to the file
+#' @param db_file full name (including path) to the file.
 #'
-#' @return A DBI::dbConnect object
+#' @return A DBI::dbConnect object.
 #' @export
 connect_to_db <- function(db_file) {
   con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
@@ -26,15 +23,6 @@ connect_to_db <- function(db_file) {
   return(con)
 }
 
-
-# TODO: how to have good examples that work to a db that lies elsewhere?
-  # add toy database in the /data/? also for tests?
-
-# see the following links:
-# https://cran.r-project.org/web/packages/dittodb/vignettes/dittodb.html
-# https://stackoverflow.com/questions/56474392/testthat-set-up-database-connection-available-to-all-tests
-# https://dittodb.jonkeane.com/
-# https://github.com/ropensci/dittodb
 
 #' Load links between MAG and ProQuest
 #'
@@ -122,7 +110,7 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highets graduation year to consider. Default: 2005.
 #'
-#' @return A lazily evaluated table with U.S. PhD graduates and their gender
+#' @return A lazily evaluated table with U.S. PhD graduates and their gender.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
