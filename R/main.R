@@ -141,7 +141,30 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
 }
 
 
+# which tests to run?
+  # expect s4 from connect? why not s3? not sure that also works with dittodb?
+  # get gender? thresholds; keep / drop na, "male", "female"
+  # generally that we get the right names? or not?
+  # expect lazy connection!! -- how can I test for this?
+  # which tests are important? what am I confident working with?
 
+
+# problem: the test will fail if the links change!
+  # need a more flexible test
+  # test non-unique / unique!
+with_mock_db({
+  con <- DBI::dbConnect(RSQLite::SQLite())
+
+  test_that("we get the right columns from linked graduates", {
+    d_graduates <- get_graduate_links(conn = con) %>%
+      head(1) %>%
+      collect()
+    # expect_equal(d_graduates$AuthorId, 2661192675)
+    # expect_equal(d_graduates$goid, 89188005)
+    expect_s3_class(d_graduates, "data.frame")
+    expect_equal(names(d_graduates), c("AuthorId", "goid", "link_score"))
+  })
+})
 
 
 
