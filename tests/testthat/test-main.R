@@ -39,6 +39,11 @@ with_mock_db({
     expect_s3_class(d, "tbl_sql")
   })
 
+  test_that("we cannot pass non-numerics", {
+    expect_error(authors_proquest(conn = con, limit = 3, start_year = "a"))
+    expect_error(authors_proquest(conn = con, limit = 3, end_year = "b"))
+  })
+
 })
 
 

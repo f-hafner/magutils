@@ -115,6 +115,7 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
                              lazy = TRUE, limit = Inf) {
 
   stopifnot(valid_sql_limit(limit))
+  stopifnot(is.double(start_year) && is.double(end_year))
 
   query_keep_us <- "
     SELECT university_id
