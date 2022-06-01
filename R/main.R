@@ -28,7 +28,8 @@ connect_to_db <- function(db_file) {
 #'
 #' @param conn A DBI connection.
 #' @param keep_unique If TRUE (the default), drops graduates that have multiple links to MAG.
-#' @param limit LIMIT of the query. An integer or NULL. Default is Inf
+#' @param limit LIMIT of the query. A positive integer or Inf.
+#' Default is Inf, in which case all records are returned.
 #' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
 #' This is useful if other tables from the database are joined later on.
 #'
@@ -40,10 +41,7 @@ connect_to_db <- function(db_file) {
 get_graduate_links <- function(conn, keep_unique = TRUE, limit = Inf, lazy = TRUE) {
 
   # TODO: this should go into a separate function and a test: "check_valid_limit" or something
-  stopifnot(!is.na(limit) & limit > 0 & !is.logical(limit))
-  if (is.finite(limit)) {
-    stopifnot(all.equal(limit, as.integer(limit)))
-  }
+  stopifnot(valid_sql_limit(limit))
 
   if (keep_unique) {
     drop_links <- dplyr::tbl(conn, "current_links") %>%

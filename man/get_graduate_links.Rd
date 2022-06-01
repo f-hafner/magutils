@@ -11,7 +11,8 @@ get_graduate_links(conn, keep_unique = TRUE, limit = Inf, lazy = TRUE)
 
 \item{keep_unique}{If TRUE (the default), drops graduates that have multiple links to MAG.}
 
-\item{limit}{LIMIT of the query. An integer or NULL. Default is Inf}
+\item{limit}{LIMIT of the query. A positive integer or Inf.
+Default is Inf, in which case all records are returned.}
 
 \item{lazy}{If TRUE (the default), does not \code{collect()} the query into a dataframe.
 This is useful if other tables from the database are joined later on.}
