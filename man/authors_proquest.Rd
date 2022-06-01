@@ -4,14 +4,26 @@
 \alias{authors_proquest}
 \title{Source PhD graduates}
 \usage{
-authors_proquest(conn, start_year = 1985, end_year = 2005)
+authors_proquest(
+  conn,
+  start_year = 1985,
+  end_year = 2005,
+  lazy = TRUE,
+  limit = Inf
+)
 }
 \arguments{
 \item{conn}{A DBI connection.}
 
 \item{start_year}{Lowest graduation year to consider. Default: 1985.}
 
-\item{end_year}{Highets graduation year to consider. Default: 2005.}
+\item{end_year}{Highest graduation year to consider. Default: 2005.}
+
+\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a dataframe.
+This is useful if other tables from the database are joined later on.}
+
+\item{limit}{LIMIT of the query. A positive integer or Inf.
+Default is Inf, in which case all records are returned.}
 }
 \value{
 A lazily evaluated table with U.S. PhD graduates and their gender.

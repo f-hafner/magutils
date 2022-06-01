@@ -27,41 +27,34 @@ connect_to_db <- function(db_file) {
 #' Load links between MAG and ProQuest
 #'
 #' @param conn A DBI connection.
-#' @param keep_unique If TRUE (the default), drops graduates that have multiple links to MAG.
+#' @param limit LIMIT of the query. A positive integer or Inf.
+#' Default is Inf, in which case all records are returned.
+#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
+#' This is useful if other tables from the database are joined later on.
 #'
-#' @return A lazy query of linked goid-AuthorId.
+#' @return A query of linked goid-AuthorId.
 #' @export
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_graduate_links <- function(conn, keep_unique = TRUE) {
+get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
 
-  if (keep_unique) {
-    drop_links <- dplyr::tbl(conn, "current_links") %>%
-      dplyr::select(.data$AuthorId, .data$goid) %>%
-      dplyr::collect() %>%
-      dplyr::group_by(.data$goid) %>%
-      dplyr::mutate(n_links = dplyr::n()) %>%
-      dplyr::ungroup() %>%
-      dplyr::filter(.data$n_links > 1) %>%
-      dplyr::pull(.data$goid) %>%
-      unique()
-
-    where_stmt <- paste0(
-      "WHERE goid NOT IN (",
-      paste0(drop_links, collapse = ", "),
-      " ) AND link_score > 0.7"
-    )
-  } else {
-    where_stmt <- "WHERE links_score > 0.7"
-  }
+  stopifnot(valid_sql_limit(limit))
 
   query_links <- paste0(
     "SELECT AuthorId, goid, link_score
-      FROM current_links ",
-    where_stmt)
+      FROM current_links
+    WHERE link_score > 0.7")
+
+  if (limit < Inf) {
+    query_links <- paste0(query_links, " LIMIT ", limit)
+  }
 
   links <- dplyr::tbl(conn, dbplyr::sql(query_links))
+
+  if (!lazy) {
+    links <- links %>% dplyr::collect()
+  }
 
   return(links)
 }
@@ -108,13 +101,21 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 #'
 #' @param conn A DBI connection.
 #' @param start_year Lowest graduation year to consider. Default: 1985.
-#' @param end_year Highets graduation year to consider. Default: 2005.
+#' @param end_year Highest graduation year to consider. Default: 2005.
+#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
+#' This is useful if other tables from the database are joined later on.
+#' @param limit  LIMIT of the query. A positive integer or Inf.
+#' Default is Inf, in which case all records are returned.
 #'
 #' @return A lazily evaluated table with U.S. PhD graduates and their gender.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
+authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
+                             lazy = TRUE, limit = Inf) {
+
+  stopifnot(valid_sql_limit(limit))
+  stopifnot(is.double(start_year) && is.double(end_year))
 
   query_keep_us <- "
     SELECT university_id
@@ -136,11 +137,17 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
                      drop_missing = TRUE) %>%
     dplyr::select(-.data$firstname_pq)
 
+  if (limit < Inf) {
+    d <- utils::head(d, limit)
+  }
+
+  if (!lazy) {
+    d <- d %>% dplyr::collect()
+  }
+
   return(d)
 
 }
-
-
 
 
 
