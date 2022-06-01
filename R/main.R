@@ -28,9 +28,11 @@ connect_to_db <- function(db_file) {
 #'
 #' @param conn A DBI connection.
 #' @param keep_unique If TRUE (the default), drops graduates that have multiple links to MAG.
-#' @param limit LIMIT of the query. An integer or NULL. Default is NULL.
+#' @param limit LIMIT of the query. An integer or NULL. Default is Inf
+#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
+#' This is useful if other tables from the database are joined later on.
 #'
-#' @return A lazy query of linked goid-AuthorId.
+#' @return A query of linked goid-AuthorId.
 #' @export
 #'
 #' @importFrom rlang .data
@@ -70,7 +72,7 @@ get_graduate_links <- function(conn, keep_unique = TRUE, limit = Inf, lazy = TRU
       FROM current_links ",
     where_stmt)
 
-  if (!is.null(limit)) {
+  if (limit < Inf) {
     query_links <- paste0(query_links, " LIMIT ", limit)
   }
 

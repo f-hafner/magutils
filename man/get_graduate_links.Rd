@@ -4,15 +4,20 @@
 \alias{get_graduate_links}
 \title{Load links between MAG and ProQuest}
 \usage{
-get_graduate_links(conn, keep_unique = TRUE)
+get_graduate_links(conn, keep_unique = TRUE, limit = Inf, lazy = TRUE)
 }
 \arguments{
 \item{conn}{A DBI connection.}
 
 \item{keep_unique}{If TRUE (the default), drops graduates that have multiple links to MAG.}
+
+\item{limit}{LIMIT of the query. An integer or NULL. Default is Inf}
+
+\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a dataframe.
+This is useful if other tables from the database are joined later on.}
 }
 \value{
-A lazy query of linked goid-AuthorId.
+A query of linked goid-AuthorId.
 }
 \description{
 Load links between MAG and ProQuest
