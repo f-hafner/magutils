@@ -102,12 +102,19 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 #' @param conn A DBI connection.
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
+#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
+#' This is useful if other tables from the database are joined later on.
+#' @param limit  LIMIT of the query. A positive integer or Inf.
+#' Default is Inf, in which case all records are returned.
 #'
 #' @return A lazily evaluated table with U.S. PhD graduates and their gender.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
+authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
+                             lazy = TRUE, limit = Inf) {
+
+  stopifnot(valid_sql_limit(limit))
 
   query_keep_us <- "
     SELECT university_id
@@ -128,6 +135,14 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005) {
                      firstname_left = "firstname_pq",
                      drop_missing = TRUE) %>%
     dplyr::select(-.data$firstname_pq)
+
+  if (limit < Inf) {
+    d <- utils::head(d, limit)
+  }
+
+  if (!lazy) {
+    d <- d %>% dplyr::collect()
+  }
 
   return(d)
 

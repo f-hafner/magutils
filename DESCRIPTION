@@ -16,7 +16,8 @@ Imports:
   magrittr,
   rlang,
   RSQLite,
-  stats
+  stats,
+  utils
 Suggests: 
     dittodb,
     testthat (>= 3.0.0)
