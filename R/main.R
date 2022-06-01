@@ -41,13 +41,19 @@ get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
 
   stopifnot(valid_sql_limit(limit))
 
-  query_links <- paste0(
-    "SELECT AuthorId, goid, link_score
-      FROM current_links
-    WHERE link_score > 0.7")
+  query_links <- "
+    SELECT AuthorId, goid, link_score
+    FROM current_links
+    WHERE link_score > 0.7
+  "
 
   if (limit < Inf) {
-    query_links <- paste0(query_links, " LIMIT ", limit)
+    query_links <- paste0(query_links, " LIMIT ?value")
+    query_links <- DBI::sqlInterpolate(
+      conn,
+      query_links,
+      value = limit
+    )
   }
 
   links <- dplyr::tbl(conn, dbplyr::sql(query_links))

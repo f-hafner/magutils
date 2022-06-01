@@ -1,6 +1,8 @@
 
 # These are some commands for building the mock database for testing
-  # Aim: hopefully it will be easier to re-create the mock files again later on
+  # Aims:
+    # 1. hopefully it will be easier to re-create the mock files again later on
+    # 2. keep track of which files are used for which test
 
 load_all()
 db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
@@ -8,7 +10,7 @@ mock_origin <- "_mnt_ssd_AcademicGraph_AcademicGraph.sqlite/"
 conn <- connect_to_db(db_file)
 
 ## get_graduate_links
-files <- c("SELECT-9ef77a", "SELECT-fa6bad")
+files <- c("SELECT-3e19a6", "_-6e9bb8")
 capture_mockdb(production_db = db_file,
                f = get_graduate_links(conn = conn,
                                       limit = 1,
