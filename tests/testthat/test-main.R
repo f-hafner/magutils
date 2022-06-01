@@ -42,22 +42,6 @@ with_mock_db({
 })
 
 
-# capture_mockdb(db_file, f= get_graduate_links(conn = conn,
-#                                            limit = 1,
-#                                            lazy = F)
-#                )
-#
-# copy_fixture(origin = "_mnt_ssd_AcademicGraph_AcademicGraph.sqlite/",
-#              filename = "SELECT-fa6bad")
-
-
-# capture_mockdb(db_file, f= authors_proquest(conn = conn, lazy = FALSE, limit = 3)
-#                )
-#
-# copy_fixture(origin = "_mnt_ssd_AcademicGraph_AcademicGraph.sqlite/",
-#              filename = "SELECT-f684d8")
-
-
 
 
 
