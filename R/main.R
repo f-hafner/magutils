@@ -27,7 +27,6 @@ connect_to_db <- function(db_file) {
 #' Load links between MAG and ProQuest
 #'
 #' @param conn A DBI connection.
-#' @param keep_unique If TRUE (the default), drops graduates that have multiple links to MAG.
 #' @param limit LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
@@ -38,37 +37,14 @@ connect_to_db <- function(db_file) {
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_graduate_links <- function(conn, keep_unique = TRUE, limit = Inf, lazy = TRUE) {
+get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
 
-  # TODO: this should go into a separate function and a test: "check_valid_limit" or something
   stopifnot(valid_sql_limit(limit))
-
-  if (keep_unique) {
-    drop_links <- dplyr::tbl(conn, "current_links") %>%
-      dplyr::select(.data$AuthorId, .data$goid) %>%
-      dplyr::collect() %>%
-      dplyr::group_by(.data$goid) %>%
-      dplyr::mutate(n_links = dplyr::n()) %>%
-      dplyr::ungroup() %>%
-      dplyr::filter(.data$n_links > 1) %>%
-      dplyr::pull(.data$goid) %>%
-      unique()
-
-    where_stmt <- paste0(
-      "WHERE goid NOT IN (",
-      paste0(drop_links, collapse = ", "),
-      " ) AND link_score > 0.7"
-    )
-  } else {
-    where_stmt <- "WHERE link_score > 0.7"
-  }
-
-
 
   query_links <- paste0(
     "SELECT AuthorId, goid, link_score
-      FROM current_links ",
-    where_stmt)
+      FROM current_links
+    WHERE link_score > 0.7")
 
   if (limit < Inf) {
     query_links <- paste0(query_links, " LIMIT ", limit)
@@ -125,7 +101,7 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 #'
 #' @param conn A DBI connection.
 #' @param start_year Lowest graduation year to consider. Default: 1985.
-#' @param end_year Highets graduation year to consider. Default: 2005.
+#' @param end_year Highest graduation year to consider. Default: 2005.
 #'
 #' @return A lazily evaluated table with U.S. PhD graduates and their gender.
 #' @export

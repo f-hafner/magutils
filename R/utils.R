@@ -14,10 +14,14 @@ valid_sql_limit <- function(x) {
   } else if (is.na(x) | is.logical(x) | is.character(x)) {
     return(FALSE)
   } else if (is.finite(x)) {
-    return(all.equal(x, as.integer(x)) & x > 0
-           )
+    return(all.equal(x, as.integer(x))
+           & x > 0)
   } else if (is.infinite(x)) {
     return(x > 0)
   }
 }
+
+
+
+
 

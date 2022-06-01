@@ -4,12 +4,10 @@
 \alias{get_graduate_links}
 \title{Load links between MAG and ProQuest}
 \usage{
-get_graduate_links(conn, keep_unique = TRUE, limit = Inf, lazy = TRUE)
+get_graduate_links(conn, limit = Inf, lazy = TRUE)
 }
 \arguments{
 \item{conn}{A DBI connection.}
-
-\item{keep_unique}{If TRUE (the default), drops graduates that have multiple links to MAG.}
 
 \item{limit}{LIMIT of the query. A positive integer or Inf.
 Default is Inf, in which case all records are returned.}

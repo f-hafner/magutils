@@ -11,7 +11,7 @@ authors_proquest(conn, start_year = 1985, end_year = 2005)
 
 \item{start_year}{Lowest graduation year to consider. Default: 1985.}
 
-\item{end_year}{Highets graduation year to consider. Default: 2005.}
+\item{end_year}{Highest graduation year to consider. Default: 2005.}
 }
 \value{
 A lazily evaluated table with U.S. PhD graduates and their gender.
