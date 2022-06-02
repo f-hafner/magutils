@@ -45,11 +45,14 @@ conn <- connect_to_db(db_file)
 Then query the graduate links:
 
 ```{r}
-
-links <- get_graduate_links(conn)
-
+links <- get_graduate_links(conn, lazy = TRUE)
 ```
 
+Or query info on graduates:
+
+```{r}
+graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+```
 
 
 
