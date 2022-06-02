@@ -33,7 +33,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpeRvjQX/temp_libpath240553f5500ee/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpeRvjQX/temp_libpath240553121fe6d/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links, FirstNamesGender, pq_authors, pq_unis
 ```
 
@@ -47,4 +47,14 @@ Or query info on graduates:
 
 ``` r
 graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+```
+
+You can join the two together
+
+``` r
+library(magrittr)
+links <- get_graduate_links(conn, lazy = TRUE)
+d_full <- authors_proquest(conn, limit = 5) %>%
+  dplyr::left_join(links, by = "goid") %>%
+  dplyr::collect()
 ```

@@ -54,6 +54,15 @@ Or query info on graduates:
 graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
 ```
 
+You can join the two together
+
+```{r}
+library(magrittr)
+links <- get_graduate_links(conn, lazy = TRUE)
+d_full <- authors_proquest(conn, limit = 5) %>%
+  dplyr::left_join(links, by = "goid") %>%
+  dplyr::collect()
+```
 
 
 
