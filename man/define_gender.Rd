@@ -13,11 +13,21 @@ define_gender(conn, table, firstname_left, drop_missing)
 
 \item{firstname_left}{Column containing the firstname in \code{table} and to be used for joining gender on.}
 
-\item{drop_missing}{If TRUE, drops records without clear gender assigned.}
+\item{drop_missing}{If TRUE, drops records without clear gender assigned.
+Clear assignment is when probability of either gender is >= 0.8}
 }
 \value{
 \code{table} augmented by a gender column.
 }
 \description{
 Define gender based on first name.
+}
+\examples{
+\dontrun{
+new_table <- define_gender(
+conn = conn, table = old_table,
+firstname_left = "firstname_old", drop_missing = TRUE
+)
+}
+
 }

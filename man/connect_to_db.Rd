@@ -7,11 +7,14 @@
 connect_to_db(db_file)
 }
 \arguments{
-\item{db_file}{full name (including path) to the file.}
+\item{db_file}{full name (including path) of the file.}
 }
 \value{
 A DBI::dbConnect object.
 }
 \description{
 Connect to the database
+}
+\examples{
+conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 }

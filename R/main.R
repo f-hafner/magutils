@@ -12,10 +12,12 @@ lps_fields <- c("biology", "psychology", "sociology", "political science")
 
 #' Connect to the database
 #'
-#' @param db_file full name (including path) to the file.
+#' @param db_file full name (including path) of the file.
 #'
 #' @return A DBI::dbConnect object.
 #' @export
+#'
+#' @examples conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 connect_to_db <- function(db_file) {
   con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
   cat("The database connection is: \n")
@@ -34,6 +36,10 @@ connect_to_db <- function(db_file) {
 #'
 #' @return A query of linked goid-AuthorId.
 #' @export
+#'
+#' @examples
+#' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+#' links <- get_graduate_links(conn)
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
@@ -72,10 +78,18 @@ get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
 #'
 #' @param table A lazily evaluated table sourced from `conn`.
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
+#' Clear assignment is when probability of either gender is >= 0.8
 #' @param firstname_left Column containing the firstname in `table` and to be used for joining gender on.
 #'
 #' @return `table` augmented by a gender column.
 #' @export
+#'
+#' @examples \dontrun{
+#' new_table <- define_gender(
+#' conn = conn, table = old_table,
+#' firstname_left = "firstname_old", drop_missing = TRUE
+#' )
+#' }
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
@@ -113,7 +127,11 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 #' @param limit  LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #'
-#' @return A lazily evaluated table with U.S. PhD graduates and their gender.
+#' @examples
+#' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+#' d_graduates <- authors_proquest(conn = conn)
+#'
+#' @return A table with U.S. PhD graduates and their gender.
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%

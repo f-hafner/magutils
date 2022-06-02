@@ -24,11 +24,37 @@ devtools::install_github("f-hafner/magutils")
 
 ## Example
 
-If you have access to an external database with the data, you can do
+If you do not have access to the full database, use the example database
+like this:
 
 ``` r
 library(magutils)
 
-# con <- connect_to_db("myfile.sqlite")
-# d_graduates <- authors_proquest(con)
+db_file <- db_example("AcademicGraph.sqlite")
+conn <- connect_to_db(db_file)
+#> The database connection is: 
+#> src:  sqlite 3.38.5 [/tmp/RtmpeRvjQX/temp_libpath240553121fe6d/magutils/extdata/AcademicGraph.sqlite]
+#> tbls: current_links, FirstNamesGender, pq_authors, pq_unis
+```
+
+Then query the graduate links:
+
+``` r
+links <- get_graduate_links(conn, lazy = TRUE)
+```
+
+Or query info on graduates:
+
+``` r
+graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+```
+
+You can join the two together
+
+``` r
+library(magrittr)
+links <- get_graduate_links(conn, lazy = TRUE)
+d_full <- authors_proquest(conn, limit = 5) %>%
+  dplyr::left_join(links, by = "goid") %>%
+  dplyr::collect()
 ```

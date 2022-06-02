@@ -21,3 +21,8 @@ A query of linked goid-AuthorId.
 \description{
 Load links between MAG and ProQuest
 }
+\examples{
+conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+links <- get_graduate_links(conn)
+
+}

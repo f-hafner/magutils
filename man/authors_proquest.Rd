@@ -26,8 +26,13 @@ This is useful if other tables from the database are joined later on.}
 Default is Inf, in which case all records are returned.}
 }
 \value{
-A lazily evaluated table with U.S. PhD graduates and their gender.
+A table with U.S. PhD graduates and their gender.
 }
 \description{
 Source PhD graduates
+}
+\examples{
+conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+d_graduates <- authors_proquest(conn = conn)
+
 }
