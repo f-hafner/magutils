@@ -30,10 +30,10 @@ like this:
 ``` r
 library(magutils)
 
-db_file <- system.file("extdata", "AcademicGraph.sqlite", package = "magutils")
+db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpMEuMNB/temp_libpath2285017349542/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpMEuMNB/temp_libpath2285070656ec/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links
 ```
 

@@ -37,7 +37,7 @@ If you do not have access to the full database, use the example database like th
 ```{r example}
 library(magutils)
 
-db_file <- system.file("extdata", "AcademicGraph.sqlite", package = "magutils")
+db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 
 ```

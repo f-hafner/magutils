@@ -12,10 +12,12 @@ lps_fields <- c("biology", "psychology", "sociology", "political science")
 
 #' Connect to the database
 #'
-#' @param db_file full name (including path) to the file.
+#' @param db_file full name (including path) of the file.
 #'
 #' @return A DBI::dbConnect object.
 #' @export
+#'
+#' @examples conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 connect_to_db <- function(db_file) {
   con <- DBI::dbConnect(RSQLite::SQLite(), db_file)
   cat("The database connection is: \n")
@@ -34,6 +36,10 @@ connect_to_db <- function(db_file) {
 #'
 #' @return A query of linked goid-AuthorId.
 #' @export
+#'
+#' @examples
+#' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+#' links <- get_graduate_links(conn)
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
