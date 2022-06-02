@@ -1,7 +1,7 @@
-## code to prepare `DATASET` dataset goes here
 
-#usethis::use_data(DATASET, overwrite = TRUE)
+# Prepare the sqlite database used in the examples.
 
+# Setup
 
 library(devtools)
 load_all()
@@ -19,19 +19,23 @@ send_db_stmt <- function(conn, stmt) {
 
 
 db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
-conn <- connect_to_db(db_file = db_file)
 
 example_dir <- "./inst/extdata/"
 example_file <- "AcademicGraph.sqlite"
-example_con <- DBI::dbConnect(RSQLite::SQLite(),
-                              paste0(example_dir, example_file))
 
-## Source some ids for which we have all the data
+# Connections
+conn <- connect_to_db(db_file = db_file)
+example_con <- connect_to_db(db_file = paste0(example_dir, example_file))
+
+
+# Source some ids for which we have all the data
 graduates <- get_graduate_links(conn = conn, limit = 10, lazy = FALSE)
 
 mag_ids <- graduates$AuthorId
 pq_ids <- graduates$goid
 
+
+# Create tables according to function in pkg
 
 ## 1. current_links
 qry <- paste0("SELECT * FROM current_links WHERE AuthorId IN (",
@@ -46,12 +50,10 @@ RSQLite::dbWriteTable(conn = example_con,
                       overwrite = TRUE)
 
 send_db_stmt(conn = example_con,
-             statement =  "CREATE UNIQUE INDEX idx_cl_Authorgoid ON
+             stmt =  "CREATE UNIQUE INDEX idx_cl_Authorgoid ON
                             current_links (AuthorId ASC, goid ASC)"
              )
 
-
-RSQLite::dbClearResult(res)
 
 ## 2. proquest authors
 
@@ -121,8 +123,6 @@ RSQLite::dbWriteTable(conn = example_con,
 send_db_stmt(conn = example_con,
              stmt = "CREATE INDEX idx_fng_FirstName ON FirstNamesGEnder (FirstName ASC)")
 
-
-# note: keep only relevant info, e.g. the names of the pq authors!
 
 
 DBI::dbDisconnect(conn)
