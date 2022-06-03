@@ -124,6 +124,58 @@ send_db_stmt(conn = example_con,
              stmt = "CREATE INDEX idx_fng_FirstName ON FirstNamesGender (FirstName ASC)")
 
 
+### MAG FoS in PQ
+qry <- paste0("
+  SELECT goid, position, mag_field0, fieldname
+  FROM pq_fields_mag
+  WHERE goid IN (",
+  paste0(pq_ids, collapse = ", "),
+  ")"
+)
+
+pq_fields_mag <- tbl(conn, sql(qry)) %>% collect()
+
+mag_fields0 <- unique(pq_fields_mag$mag_field0)
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "pq_fields_mag",
+                      value = pq_fields_mag,
+                      overwrite = TRUE)
+
+idx_fields <- c(
+  "CREATE UNIQUE INDEX idx_pqfm_id on pq_fields_mag (goid ASC, mag_field0 ASC)",
+  "CREATE INDEX idx_pqfm_fos on pq_fields_mag (mag_field0 ASC)"
+)
+
+purrr::map(idx_fields,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
+### MAG FoS in MAG
+qry <- paste0("
+  SELECT FieldOfStudyId, NormalizedName
+  FROM FieldsOfStudy
+  WHERE FieldOfStudyId IN (",
+  paste0(mag_fields0, collapse = ", "),
+              ")"
+)
+
+FieldsOfStudy <- tbl(conn, sql(qry)) %>% collect()
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "FieldsOfStudy",
+                      value = FieldsOfStudy,
+                      overwrite = TRUE)
+
+idx_fos <- c(
+  "CREATE UNIQUE INDEX idx_fos_FieldOfStudyId
+                ON FieldsOfStudy (FieldOfStudyId ASC)"
+)
+
+purrr::map(idx_fos,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
 
 DBI::dbDisconnect(conn)
 DBI::dbDisconnect(example_con)

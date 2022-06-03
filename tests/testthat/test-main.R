@@ -32,7 +32,9 @@ with_mock_db({
                           limit = 3)
     expect_s3_class(d, "data.frame")
     expect_equal(nrow(d), 3)
-    expect_equal(names(d), c("goid", "degree_year", "university_id", "gender"))
+    expect_equal(names(d), c("goid", "degree_year",
+                             "university_id", "gender",
+                             "fieldname0_mag"))
   })
 
   test_that("we get a lazily evaluated table", {

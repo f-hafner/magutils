@@ -162,6 +162,10 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
                      drop_missing = TRUE) %>%
     dplyr::select(-.data$firstname_pq)
 
+  d <- d %>%
+    dplyr::left_join(graduate_fields(conn),
+                     by = "goid")
+
   if (limit < Inf) {
     d <- utils::head(d, limit)
   }
@@ -175,5 +179,58 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
 }
 
 
+#' Define the field of study for graduates.
+#'
+#' @param conn An object of the DBIConnection class.
+#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
+#' This is useful if other tables from the database are joined later on.
+#' @param limit LIMIT of the query. A positive integer or Inf.
+#' Default is Inf, in which case all records are returned.
+#'
+#' @return A table with one field name for each goid.
+#' The field name is the name of the field at level 0 in MAG. The field is
+#' defined with a custom mapping between the reported field of study in ProQuest
+#' and the fields in MAG. The mapping is stored in the database.
+#'
+#' **Note**: A record can have multiple fields, and currently the function returns the
+#' first reported. A missing `fieldname0_mag` indicates that it is not possible
+#' to map the field at position 0 in ProQuest to the MAG fields.
+#' In future, this may be made more flexible to consider any of the reported
+#' fields in ProQuest.
+#' @export
+#'
+#' @examples \dontrun{
+#' d <- graduate_fields(db_example("AcademicGraph.sqlite"))
+#' }
+#' @importFrom rlang .data
+#' @importFrom magrittr %>%
+graduate_fields <- function(conn, lazy = TRUE, limit = Inf) {
+
+  stopifnot(valid_sql_limit(limit))
+
+  FieldsOfStudy <- dplyr::tbl(conn, "FieldsOfStudy")
+
+  goid_field <- dplyr::tbl(conn, "pq_fields_mag") %>%
+    dplyr::filter(.data$position == 0) %>%
+    dplyr::select(.data$goid,
+                  fieldname_pq = .data$fieldname,
+                  .data$mag_field0) %>%
+    dplyr::left_join(FieldsOfStudy %>%
+                       dplyr::select(.data$FieldOfStudyId,
+                                     fieldname0_mag = .data$NormalizedName),
+                     by = c("mag_field0" = "FieldOfStudyId")) %>%
+    dplyr::select(.data$goid,
+                  .data$fieldname0_mag)
+
+  if (limit < Inf) {
+    goid_field <- utils::head(goid_field, limit)
+  }
+
+  if (!lazy) {
+    goid_field <- goid_field %>% dplyr::collect()
+  }
+
+  return(goid_field)
+}
 
 
