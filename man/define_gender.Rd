@@ -7,7 +7,7 @@
 define_gender(conn, table, firstname_left, drop_missing)
 }
 \arguments{
-\item{conn}{A DBI connection.}
+\item{conn}{An object of the DBIConnection class.}
 
 \item{table}{A lazily evaluated table sourced from \code{conn}.}
 

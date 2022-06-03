@@ -13,7 +13,7 @@ authors_proquest(
 )
 }
 \arguments{
-\item{conn}{A DBI connection.}
+\item{conn}{An object of the DBIConnection class.}
 
 \item{start_year}{Lowest graduation year to consider. Default: 1985.}
 

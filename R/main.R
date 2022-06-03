@@ -14,7 +14,8 @@ lps_fields <- c("biology", "psychology", "sociology", "political science")
 #'
 #' @param db_file full name (including path) of the file.
 #'
-#' @return A DBI::dbConnect object.
+#' @return Returns an object of the DBIConnection class and prints the db info
+#' of the connection with `dbplyr::src_dbi()`.
 #' @export
 #'
 #' @examples conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
@@ -28,7 +29,7 @@ connect_to_db <- function(db_file) {
 
 #' Load links between MAG and ProQuest
 #'
-#' @param conn A DBI connection.
+#' @param conn An object of the DBIConnection class.
 #' @param limit LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
@@ -74,7 +75,7 @@ get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
 
 #' Define gender based on first name.
 #'
-#' @param conn A DBI connection.
+#' @param conn An object of the DBIConnection class.
 #'
 #' @param table A lazily evaluated table sourced from `conn`.
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
@@ -119,7 +120,7 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
 
 #' Source PhD graduates
 #'
-#' @param conn A DBI connection.
+#' @param conn An object of the DBIConnection class.
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
 #' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.

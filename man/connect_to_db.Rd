@@ -10,7 +10,8 @@ connect_to_db(db_file)
 \item{db_file}{full name (including path) of the file.}
 }
 \value{
-A DBI::dbConnect object.
+Returns an object of the DBIConnection class and prints the db info
+of the connection with \code{dbplyr::src_dbi()}.
 }
 \description{
 Connect to the database

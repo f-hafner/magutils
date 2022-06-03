@@ -7,7 +7,7 @@
 get_graduate_links(conn, limit = Inf, lazy = TRUE)
 }
 \arguments{
-\item{conn}{A DBI connection.}
+\item{conn}{An object of the DBIConnection class.}
 
 \item{limit}{LIMIT of the query. A positive integer or Inf.
 Default is Inf, in which case all records are returned.}

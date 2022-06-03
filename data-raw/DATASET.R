@@ -121,7 +121,7 @@ RSQLite::dbWriteTable(conn = example_con,
                       overwrite = TRUE)
 
 send_db_stmt(conn = example_con,
-             stmt = "CREATE INDEX idx_fng_FirstName ON FirstNamesGEnder (FirstName ASC)")
+             stmt = "CREATE INDEX idx_fng_FirstName ON FirstNamesGender (FirstName ASC)")
 
 
 
