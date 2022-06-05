@@ -65,5 +65,10 @@ d_full <- authors_proquest(conn, limit = 5) %>%
 ```
 
 
+At the end, do not forget to disconnect from the database:
+
+```{r}
+DBI::dbDisconnect(conn)
+```
 
 

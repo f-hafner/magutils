@@ -30,6 +30,9 @@ connect_to_db <- function(db_file) {
 #' Load links between MAG and ProQuest
 #'
 #' @param conn An object of the DBIConnection class.
+#' @param from The table with the links to be used.
+#' Must be "advisors" or "graduates"
+#' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
 #' @param limit LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
@@ -40,30 +43,52 @@ connect_to_db <- function(db_file) {
 #'
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-#' links <- get_graduate_links(conn)
+#' links <- get_links(conn, from = "graduates", min_score = 0.7)
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_graduate_links <- function(conn, limit = Inf, lazy = TRUE) {
+get_links <- function(conn, from, min_score = 0.7,
+                      limit = Inf, lazy = TRUE) {
 
+  tables_with_links <- list(
+    graduates = "current_links",
+    advisors = "current_links_advisors"
+  )
   stopifnot(valid_sql_limit(limit))
+  stopifnot(is.double(min_score)
+            & min_score >= 0
+            & min_score <= 1)
+  stopifnot(from %in% names(tables_with_links))
+  from_tbl <- tables_with_links[[from]]
 
+  # TODO: add the correct column names by from
   query_links <- "
     SELECT AuthorId, goid, link_score
-    FROM current_links
-    WHERE link_score > 0.7
+    FROM ?link_table
+    WHERE link_score >= ?minimum_score
   "
 
-  if (limit < Inf) {
-    query_links <- paste0(query_links, " LIMIT ?value")
-    query_links <- DBI::sqlInterpolate(
-      conn,
-      query_links,
-      value = limit
-    )
-  }
+  query_links <- DBI::sqlInterpolate(
+    conn,
+    query_links,
+    link_table = from_tbl,
+    minimum_score = min_score
+  )
+
+  # if (limit < Inf) {
+  #   query_links <- paste0(query_links, " LIMIT ?value")
+  #   query_links <- DBI::sqlInterpolate(
+  #     conn,
+  #     query_links,
+  #     value = limit
+  #   )
+  # }
 
   links <- dplyr::tbl(conn, dbplyr::sql(query_links))
+
+  if (limit < Inf) {
+    links <- utils::head(links, limit)
+  }
 
   if (!lazy) {
     links <- links %>% dplyr::collect()
@@ -232,5 +257,81 @@ graduate_fields <- function(conn, lazy = TRUE, limit = Inf) {
 
   return(goid_field)
 }
+
+
+## prepare some queries
+
+# advisor-graduate links and field of advisor
+qry <- "
+SELECT goid, relationship_id, AuthorId, fieldname
+FROM pq_advisors
+LEFT JOIN current_links_advisors
+USING (relationship_id)
+LEFT JOIN (
+  SELECT AuthorId, fieldname
+  FROM author_fields
+  LEFT JOIN (
+    SELECT FieldOfStudyId, NormalizedName AS fieldname
+    FROM FieldsOfStudy
+  ) USING (FieldOfStudyId)
+  WHERE FieldClass = 'main'
+) USING (AuthorId)
+"
+# --drop-missing? inner join instead?
+
+
+# advisor-output
+  # which table to use? where do we make author_output? author_output is made in prep_linked_data.py. it only uses the data on
+    # links between graduates and MAG.
+  # where do we make current_links_advisors? is it properly prepped? NO. see advisor_links_quality_select
+
+# goid-affil-year
+  # affiliations of the *linked* graduates
+  # thus, inner join get_graduate_links to affiliations
+# dk <- dplyr::tbl(conn, "AuthorAffiliation") %>%
+#   dplyr::inner_join(get_graduate_links(conn),
+#                     by = "AuthorId")
+
+
+
+# advisor-affil-year. NOTE: need link confidence!
+"
+SELECT *
+FROM AuthorAffiliation
+INNER JOIN (
+  SELECT AuthorId, relationship_id
+  FROM current_links_advisors
+) USING (AuthorId)
+"
+# use as above: tbl(conn, AuthorAffiliation) %>% inner_join(get_links(conn, "advisors"))
+
+
+
+# advisor-linkedaffil-year. the code below can be used for advisor-affil
+
+"
+select *
+from linked_ids_advisors
+inner join (
+  select normalizedname as authorname, authorid
+  from authors)
+using(authorid)
+inner join (
+  select relationship_id, firstname, lastname
+  from pq_advisors
+) using (relationship_id)
+where link_score >= 0.95
+
+"
+
+# somehwere need to do something similar as prep_linked_data, just for advisors instead of advisees
+  # define links to retain, create index
+  # author_output for advisors (and correspondingly author_panel)
+# this seems like a task better suited for MAG. how to generalize the existing code for links graduates-MAG?
+
+
+
+
+
 
 
