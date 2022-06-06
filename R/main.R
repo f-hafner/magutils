@@ -50,23 +50,29 @@ connect_to_db <- function(db_file) {
 get_links <- function(conn, from, min_score = 0.7,
                       limit = Inf, lazy = TRUE) {
 
-  tables_with_links <- list(
-    graduates = "current_links",
-    advisors = "current_links_advisors"
+  tbl_info <- list(
+    graduates = list(
+      tbl_name = "current_links",
+      pq_id = "goid"
+    ),
+    advisors = list(
+      tbl_name = "current_links_advisors",
+      pq_id = "relationship_id"
+    )
   )
   stopifnot(valid_sql_limit(limit))
   stopifnot(is.double(min_score)
             & min_score >= 0
             & min_score <= 1)
-  stopifnot(from %in% names(tables_with_links))
-  from_tbl <- tables_with_links[[from]]
+  stopifnot(from %in% names(tbl_info))
+  from_tbl <- tbl_info[[from]][["tbl_name"]]
+  pq_id <- tbl_info[[from]][["pq_id"]]
 
-  # TODO: add the correct column names by from
-  query_links <- "
-    SELECT AuthorId, goid, link_score
+  query_links <- paste0("
+    SELECT AuthorId, ", pq_id, ", link_score
     FROM ?link_table
     WHERE link_score >= ?minimum_score
-  "
+  ")
 
   query_links <- DBI::sqlInterpolate(
     conn,
@@ -75,24 +81,11 @@ get_links <- function(conn, from, min_score = 0.7,
     minimum_score = min_score
   )
 
-  # if (limit < Inf) {
-  #   query_links <- paste0(query_links, " LIMIT ?value")
-  #   query_links <- DBI::sqlInterpolate(
-  #     conn,
-  #     query_links,
-  #     value = limit
-  #   )
-  # }
 
-  links <- dplyr::tbl(conn, dbplyr::sql(query_links))
-
-  if (limit < Inf) {
-    links <- utils::head(links, limit)
-  }
-
-  if (!lazy) {
-    links <- links %>% dplyr::collect()
-  }
+  links <- dplyr::tbl(conn,
+                      dbplyr::sql(query_links)) %>%
+    make_tbl_output(limit = limit,
+                    lazy = lazy)
 
   return(links)
 }
@@ -189,15 +182,9 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
 
   d <- d %>%
     dplyr::left_join(graduate_fields(conn),
-                     by = "goid")
-
-  if (limit < Inf) {
-    d <- utils::head(d, limit)
-  }
-
-  if (!lazy) {
-    d <- d %>% dplyr::collect()
-  }
+                     by = "goid") %>%
+    make_tbl_output(limit = limit,
+                    lazy = lazy)
 
   return(d)
 
@@ -207,8 +194,8 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
 #' Define the field of study for graduates.
 #'
 #' @param conn An object of the DBIConnection class.
-#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
-#' This is useful if other tables from the database are joined later on.
+#' @param lazy If TRUE (the default), does not `collect()` the query into a
+#' dataframe. This is useful if other tables from the database are joined later on.
 #' @param limit LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #'
@@ -247,13 +234,9 @@ graduate_fields <- function(conn, lazy = TRUE, limit = Inf) {
     dplyr::select(.data$goid,
                   .data$fieldname0_mag)
 
-  if (limit < Inf) {
-    goid_field <- utils::head(goid_field, limit)
-  }
-
-  if (!lazy) {
-    goid_field <- goid_field %>% dplyr::collect()
-  }
+  goid_field <- make_tbl_output(tbl = goid_field,
+                                limit = limit,
+                                lazy = lazy)
 
   return(goid_field)
 }
@@ -323,11 +306,6 @@ inner join (
 where link_score >= 0.95
 
 "
-
-# somehwere need to do something similar as prep_linked_data, just for advisors instead of advisees
-  # define links to retain, create index
-  # author_output for advisors (and correspondingly author_panel)
-# this seems like a task better suited for MAG. how to generalize the existing code for links graduates-MAG?
 
 
 

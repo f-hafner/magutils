@@ -9,8 +9,8 @@ graduate_fields(conn, lazy = TRUE, limit = Inf)
 \arguments{
 \item{conn}{An object of the DBIConnection class.}
 
-\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a dataframe.
-This is useful if other tables from the database are joined later on.}
+\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a
+dataframe. This is useful if other tables from the database are joined later on.}
 
 \item{limit}{LIMIT of the query. A positive integer or Inf.
 Default is Inf, in which case all records are returned.}
