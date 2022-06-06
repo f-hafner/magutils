@@ -2,7 +2,7 @@
 
 #' Check whether input is a non-negative integer or Inf.
 #'
-#' @param x An atomic vector.
+#' @param x A scalar (numeric or Inf).
 #'
 #' @return Logical.
 #' @export
