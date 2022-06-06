@@ -33,14 +33,15 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpeRvjQX/temp_libpath240553121fe6d/magutils/extdata/AcademicGraph.sqlite]
-#> tbls: current_links, FirstNamesGender, pq_authors, pq_unis
+#> src:  sqlite 3.38.5 [/tmp/RtmpoukGab/temp_libpath429f91b86aef/magutils/extdata/AcademicGraph.sqlite]
+#> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
+#>   pq_fields_mag, pq_unis
 ```
 
 Then query the graduate links:
 
 ``` r
-links <- get_graduate_links(conn, lazy = TRUE)
+links <- get_links(conn, from = "graduates", lazy = TRUE)
 ```
 
 Or query info on graduates:
@@ -53,8 +54,14 @@ You can join the two together
 
 ``` r
 library(magrittr)
-links <- get_graduate_links(conn, lazy = TRUE)
+links <- get_links(conn, from = "graduates", lazy = TRUE)
 d_full <- authors_proquest(conn, limit = 5) %>%
   dplyr::left_join(links, by = "goid") %>%
   dplyr::collect()
+```
+
+At the end, do not forget to disconnect from the database:
+
+``` r
+DBI::dbDisconnect(conn)
 ```

@@ -23,6 +23,32 @@ db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
 mock_origin <- "_mnt_ssd_AcademicGraph_AcademicGraph.sqlite/"
 conn <- connect_to_db(db_file)
 
+## make_tbl_output
+capture_mockdb(production_db = db_file,
+               f = make_tbl_output(dplyr::tbl(conn, "current_links"),
+                                   limit = 2,
+                                   lazy = FALSE)
+               )
+capture_mockdb(production_db = db_file,
+               f = make_tbl_output(dplyr::tbl(conn, "current_links"),
+                                   limit = 2,
+                                   lazy = TRUE)
+)
+
+files <- c("SELECT-6b0470", "SELECT-d669a6")
+purrr::map(files,
+           .f = ~copy_fixture(
+             origin = mock_origin,
+             filename = .x
+           ))
+
+
+d_df <- make_tbl_output(d, limit = 2, lazy = FALSE)
+d_lazy <- make_tbl_output(d, limit = 2, lazy = TRUE)
+
+
+
+
 ## get_links: graduates
 capture_mockdb(production_db = db_file,
                f = get_links(conn = conn,
@@ -53,13 +79,6 @@ purrr::map(files,
 
 
 ## authors_proquest
-
-
-## old
-
-
-## new
-
 capture_mockdb(production_db = db_file,
                f = authors_proquest(conn = conn,
                                     lazy = FALSE,
@@ -77,6 +96,20 @@ purrr::map(files,
              filename = .x
            ))
 
+## graduate_fields
+capture_mockdb(production_db = db_file,
+               f = graduate_fields(conn = conn,
+                                   lazy = FALSE,
+                                   limit = 1)
+)
+
+files <- c("SELECT-ab9354")
+
+purrr::map(files,
+           .f = ~copy_fixture(
+             origin = mock_origin,
+             filename = .x
+           ))
 
 
 
