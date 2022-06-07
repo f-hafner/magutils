@@ -41,6 +41,15 @@ get_links <- function(conn, from, min_score = 0.7,
   from_tbl <- tbl_info[[from]][["tbl_name"]]
   pq_id <- tbl_info[[from]][["pq_id"]]
 
+  if (from == "advisors" & min_score < 0.95) {
+    message(strwrap(
+      "Note: At the moment, using a link score below 0.95 for advisors
+      can result in suspiciously many fals positives. Carefully inspect the links
+      you use.",
+      prefix = " ", initial = "")
+    )
+  }
+
   query_links <- paste0("
     SELECT AuthorId, ", pq_id, ", link_score
     FROM ?link_table

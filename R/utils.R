@@ -121,6 +121,23 @@ make_tbl_output <- function(tbl, limit, lazy) {
 
 
 
+#' Extract the names of a lazily evaluated table
+#'
+#' @param tbl A lazily evaluated table from dplyr.
+#'
+#' @return A vector with the names of the dataframe if `tbl` was `collect`ed.
+#' @export
+#' @importFrom magrittr %>%
+names_tbl_lazy <- function(tbl) {
+  out <- make_tbl_output(tbl, limit = 1, lazy = FALSE) %>%
+    dplyr::collect() %>%
+    names()
+  return(out)
+}
+
+
+
+
 
 
 

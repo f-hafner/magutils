@@ -33,7 +33,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpoukGab/temp_libpath429f91b86aef/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpnUspUr/temp_libpath43c0967bb0ba7/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
 #>   pq_fields_mag, pq_unis
 ```
@@ -65,3 +65,26 @@ At the end, do not forget to disconnect from the database:
 ``` r
 DBI::dbDisconnect(conn)
 ```
+
+## Main functions
+
+Extracting key tables
+
+-   `authors_proquest`: Source PhD graduates in the U.S.
+
+-   `get_links`: Load links between ProQuest and MAG. Can be links from
+    PhD graduates to MAG authors, or from PhD advisors to MAG authors
+
+The following functions can be used to get more information from the
+records in the tables above:
+
+-   `graduate_fields`: table with main field of PhD graduates. this is
+    at the unit level
+
+-   `augment_tbl`: augment a table with various additional information:
+
+    -   output
+
+    -   affiliations
+
+    -   co-authors

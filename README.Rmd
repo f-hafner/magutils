@@ -72,3 +72,29 @@ DBI::dbDisconnect(conn)
 ```
 
 
+## Main functions 
+
+
+Extracting key tables
+
+- `authors_proquest`: Source PhD graduates in the U.S.
+
+- `get_links`: Load links between ProQuest and MAG. Can be links from PhD graduates to MAG authors, or from PhD advisors to MAG authors
+
+
+The following functions can be used to get more information from the records in the tables above:
+
+- `graduate_fields`: table with main field of PhD graduates. this is at the unit level
+
+- `augment_tbl`: augment a table with various additional information:
+
+  - output
+  
+  - affiliations 
+  
+  - co-authors
+
+
+
+
+
