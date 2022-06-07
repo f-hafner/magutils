@@ -15,6 +15,7 @@ with_mock_db({
                          lazy = FALSE)
   advisors <- get_links(conn = con,
                         from = "advisors",
+                        min_score = 0.99,
                         limit = 1,
                         lazy = FALSE)
 
@@ -53,3 +54,6 @@ with_mock_db({
   })
 
 })
+
+
+
