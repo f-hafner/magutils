@@ -18,6 +18,7 @@
     # test succeeds, you can delete `del.R`.
   # I think dependning on how `myfunc` is modified, many or few files can be deleted.
 
+library(devtools)
 load_all()
 db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
 mock_origin <- "_mnt_ssd_AcademicGraph_AcademicGraph.sqlite/"
@@ -56,7 +57,7 @@ capture_mockdb(production_db = db_file,
                              limit = 1,
                              lazy = FALSE)
                )
-files <- c("SELECT-a1e1ed", "SELECT-aadfe7")
+files <- c("SELECT-a1e1ed", "SELECT-aadfe7", "SELECT-db1387")
 purrr::map(files,
            .f = ~copy_fixture(
              origin = mock_origin,
@@ -67,10 +68,11 @@ purrr::map(files,
 capture_mockdb(production_db = db_file,
                f = get_links(conn = conn,
                              from = "advisors",
+                             min_score = 0.99,
                              limit = 1,
                              lazy = FALSE)
 )
-files <- c("SELECT-d35281", "SELECT-d9b6b4")
+files <- c("SELECT-d9b68f", "SELECT-fb0ad9", "SELECT-b5445f")
 purrr::map(files,
            .f = ~copy_fixture(
              origin = mock_origin,
@@ -88,7 +90,8 @@ capture_mockdb(production_db = db_file,
 files <- c("SELECT-6db156", "SELECT-93beda",
            "SELECT-f49f96",
            # added for graduates fields
-           "SELECT-276cf8", "SELECT-7c7feb", "SELECT-7b2796")
+           "SELECT-276cf8", "SELECT-7c7feb", "SELECT-7b2796",
+           "SELECT-dfa715", "SELECT-88c04b")
 
 purrr::map(files,
            .f = ~copy_fixture(
@@ -103,7 +106,7 @@ capture_mockdb(production_db = db_file,
                                    limit = 1)
 )
 
-files <- c("SELECT-ab9354")
+files <- c("SELECT-ecea38")
 
 purrr::map(files,
            .f = ~copy_fixture(
@@ -111,5 +114,40 @@ purrr::map(files,
              filename = .x
            ))
 
+## augment_tbl
+capture_mockdb(production_db = db_file,
+               f = get_links(conn = conn,
+                             from = "graduates",
+                             limit = 1,
+                             lazy = FALSE)
+)
+
+capture_mockdb(
+  production_db = db_file,
+  f = get_links(conn = conn,
+                from = "graduates",
+                limit = 1,
+                lazy = TRUE) %>%
+    augment_tbl(conn, with_info = "affiliation",
+                lazy = FALSE, limit = 1)
+)
+
+capture_mockdb(
+  production_db = db_file,
+  f = get_links(conn = conn,
+                from = "graduates",
+                limit = 1,
+                lazy = TRUE) %>%
+    augment_tbl(conn, with_info = "output",
+                lazy = FALSE, limit = 1)
+)
+
+files <- c("SELECT-a00d82", "SELECT-e7c857", "SELECT-0d92c6",
+           "SELECT-0bc987")
+purrr::map(files,
+           .f = ~copy_fixture(
+             origin = mock_origin,
+             filename = .x
+           ))
 
 

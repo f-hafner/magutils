@@ -12,10 +12,12 @@
 #' @param on_col On which column should the information be joined? The default
 #' is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 #' join information on co-authors (see below for details).
+#' @param ... Additional arguments to be passed on to \code{\link{make_tbl_output}}.
 #'
 #' @return A new `tbl` with the columns specified `with_info` added.
 #'
-#' @details There are two main purposes for which this function can be currently
+#' @details
+#' There are two main purposes for which this function can be currently
 #' used:
 #' 1. Join output and/or affiliation information to
 #' author units. This works directly with one call to `augment_tbl`.
@@ -35,7 +37,7 @@
 #' augment_tbl(conn, with_info = "output")
 #' }
 #' @importFrom magrittr %>%
-augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId") {
+augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId", ...) {
 
   tbl_classes <- attributes(tbl)$class
   stopifnot("tbl_lazy" %in% tbl_classes
@@ -82,7 +84,11 @@ augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId") {
       message("Joining output by unit-time.")
     }
 
-    output <- dplyr::tbl(conn, "author_output")
+    output <- dplyr::tbl(conn, "author_output") %>%
+      dplyr::select(.data$AuthorId,
+                    .data$Year,
+                    .data$PaperCount,
+                    .data$TotalForwardCitations)
     tbl <- tbl %>%
       dplyr::left_join(output,
                        by = join_cols) # TODO: also year!!
@@ -96,17 +102,15 @@ augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId") {
                        by = join_cols)
   }
 
+  dots <- list(...)
+  if (length(dots > 0)) {
+    if ((! "lazy" %in% names(dots)) | (! "limit" %in% names(dots))) {
+      stop("You need to specify both `lazy` and `limit` in ... .")
+    }
+    tbl <- make_tbl_output(tbl, limit = dots$limit, lazy = dots$lazy)
+  }
 
   return(tbl)
-
-  # TODO: add tbl limit and lazy option?
-  # TODO: how to name the outputted columns? ie when joining affiliations to co-authors?? --> automatic?
-    # put it into the documentation instead?
-
 }
 
-
-
-# other TODO
-  # adjust other functions that use a tbl as input: put tbl in first, conn in second position. check that tbl is lazily evaluated if joins are made on the database
 

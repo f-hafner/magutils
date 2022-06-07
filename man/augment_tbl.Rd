@@ -4,7 +4,7 @@
 \alias{augment_tbl}
 \title{Augment a table with additional columns.}
 \usage{
-augment_tbl(tbl, conn, with_info, on_col = "AuthorId")
+augment_tbl(tbl, conn, with_info, on_col = "AuthorId", ...)
 }
 \arguments{
 \item{tbl}{A lazily evaluated table from dbplyr.}
@@ -22,6 +22,8 @@ A column vector with the following options, specified as strings:
 \item{on_col}{On which column should the information be joined? The default
 is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 join information on co-authors (see below for details).}
+
+\item{...}{Additional arguments to be passed on to \code{\link{make_tbl_output}}.}
 }
 \value{
 A new \code{tbl} with the columns specified \code{with_info} added.

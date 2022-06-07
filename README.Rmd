@@ -94,7 +94,7 @@ The following functions can be used to get more information from the records in 
   
   - co-authors
 
-
+- `define_gender`: define the gender of the 
 
 
 

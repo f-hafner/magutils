@@ -3,10 +3,8 @@
 #' @param conn An object of the DBIConnection class.
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
-#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
-#' This is useful if other tables from the database are joined later on.
-#' @param limit  LIMIT of the query. A positive integer or Inf.
-#' Default is Inf, in which case all records are returned.
+#' @param ... additional arguments to be passed on to be passed on to
+#'  \code{\link{make_tbl_output}}
 #'
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
@@ -16,10 +14,8 @@
 #' @export
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
-                             lazy = TRUE, limit = Inf) {
+authors_proquest <- function(conn, start_year = 1985, end_year = 2005, ...) {
 
-  stopifnot(valid_sql_limit(limit))
   stopifnot(is.double(start_year) && is.double(end_year))
 
   query_keep_us <- "
@@ -44,9 +40,15 @@ authors_proquest <- function(conn, start_year = 1985, end_year = 2005,
 
   d <- d %>%
     dplyr::left_join(graduate_fields(conn),
-                     by = "goid") %>%
-    make_tbl_output(limit = limit,
-                    lazy = lazy)
+                     by = "goid")
+
+  dots <- list(...)
+  if (length(dots > 0)) {
+    if ((! "lazy" %in% names(dots)) | (! "limit" %in% names(dots))) {
+      stop("You need to specify both `lazy` and `limit` in ... .")
+    }
+    d <- make_tbl_output(d, limit = dots$limit, lazy = dots$lazy)
+  }
 
   return(d)
 
