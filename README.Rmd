@@ -51,7 +51,7 @@ links <- get_links(conn, from = "graduates", lazy = TRUE)
 Or query info on graduates:
 
 ```{r}
-graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+graduates <- get_proquest(conn, from = "graduates", lazy = FALSE, limit = 3)
 ```
 
 You can join the two together
@@ -59,7 +59,7 @@ You can join the two together
 ```{r}
 library(magrittr)
 links <- get_links(conn, from = "graduates", lazy = TRUE)
-d_full <- authors_proquest(conn, limit = 5) %>%
+d_full <- get_proquest(conn, from = "graduates", limit = 5) %>%
   dplyr::left_join(links, by = "goid") %>%
   dplyr::collect()
 ```
@@ -77,7 +77,7 @@ DBI::dbDisconnect(conn)
 
 Extracting key tables
 
-- `authors_proquest`: Source PhD graduates in the U.S.
+- `get_proquest`: Source data on dissertations in United States from ProQuest.
 
 - `get_links`: Load links between ProQuest and MAG. Can be links from PhD graduates to MAG authors, or from PhD advisors to MAG authors
 

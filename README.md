@@ -35,7 +35,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpnUspUr/temp_libpath43c0947284772/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpWi7wwC/temp_libpath475bc273b69fd/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
 #>   pq_fields_mag, pq_unis
 ```
@@ -49,7 +49,7 @@ links <- get_links(conn, from = "graduates", lazy = TRUE)
 Or query info on graduates:
 
 ``` r
-graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+graduates <- get_proquest(conn, from = "graduates", lazy = FALSE, limit = 3)
 ```
 
 You can join the two together
@@ -57,7 +57,7 @@ You can join the two together
 ``` r
 library(magrittr)
 links <- get_links(conn, from = "graduates", lazy = TRUE)
-d_full <- authors_proquest(conn, limit = 5) %>%
+d_full <- get_proquest(conn, from = "graduates", limit = 5) %>%
   dplyr::left_join(links, by = "goid") %>%
   dplyr::collect()
 ```
@@ -72,7 +72,8 @@ DBI::dbDisconnect(conn)
 
 Extracting key tables
 
--   `authors_proquest`: Source PhD graduates in the U.S.
+-   `get_proquest`: Source data on dissertations in United States from
+    ProQuest.
 
 -   `get_links`: Load links between ProQuest and MAG. Can be links from
     PhD graduates to MAG authors, or from PhD advisors to MAG authors
@@ -90,3 +91,5 @@ records in the tables above:
     -   affiliations
 
     -   co-authors
+
+-   `define_gender`: define the gender of the

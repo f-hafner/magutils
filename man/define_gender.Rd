@@ -4,12 +4,12 @@
 \alias{define_gender}
 \title{Define gender based on first name.}
 \usage{
-define_gender(conn, table, firstname_left, drop_missing)
+define_gender(tbl, conn, firstname_left, drop_missing)
 }
 \arguments{
-\item{conn}{An object of the DBIConnection class.}
+\item{tbl}{A lazily evaluated table sourced from \code{conn}.}
 
-\item{table}{A lazily evaluated table sourced from \code{conn}.}
+\item{conn}{An object of the DBIConnection class.}
 
 \item{firstname_left}{Column containing the firstname in \code{table} and to be used for joining gender on.}
 

@@ -80,18 +80,21 @@ purrr::map(files,
            ))
 
 
-## authors_proquest
+## get_proquest: graduates
 capture_mockdb(production_db = db_file,
-               f = authors_proquest(conn = conn,
-                                    lazy = FALSE,
-                                    limit = 3)
+               f = get_proquest(conn = conn,
+                                from = "graduates",
+                                lazy = FALSE,
+                                limit = 3)
 )
 
+# Note: some of these here are now deleted and do not exist anymore.. need to clean up!
 files <- c("SELECT-6db156", "SELECT-93beda",
            "SELECT-f49f96",
            # added for graduates fields
            "SELECT-276cf8", "SELECT-7c7feb", "SELECT-7b2796",
-           "SELECT-dfa715", "SELECT-88c04b")
+           "SELECT-dfa715", "SELECT-88c04b",
+           "SELECT_-ad0113")
 
 purrr::map(files,
            .f = ~copy_fixture(
@@ -99,14 +102,17 @@ purrr::map(files,
              filename = .x
            ))
 
-## graduate_fields
+## define_field
 capture_mockdb(production_db = db_file,
-               f = graduate_fields(conn = conn,
-                                   lazy = FALSE,
-                                   limit = 1)
+               f = dplyr::tbl(conn, "Authors") %>%
+                 dplyr::select(AuthorId) %>%
+                 define_field(conn = conn,
+                              from = "mag_authors",
+                              limit = 1,
+                              lazy = FALSE)
 )
 
-files <- c("SELECT-ecea38")
+files <- c("SELECT-5ddc7e", "SELECT-836d70", "SELECT-2e32e4")
 
 purrr::map(files,
            .f = ~copy_fixture(

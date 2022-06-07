@@ -29,9 +29,8 @@ connect_to_db <- function(db_file) {
 
 #' Define gender based on first name.
 #'
+#' @param tbl A lazily evaluated table sourced from `conn`.
 #' @param conn An object of the DBIConnection class.
-#'
-#' @param table A lazily evaluated table sourced from `conn`.
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
 #' Clear assignment is when probability of either gender is >= 0.8
 #' @param firstname_left Column containing the firstname in `table` and to be used for joining gender on.
@@ -48,14 +47,14 @@ connect_to_db <- function(db_file) {
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-define_gender <- function(conn, table, firstname_left, drop_missing) {
+define_gender <- function(tbl, conn, firstname_left, drop_missing) {
 
   names_gender <- dplyr::tbl(conn, "FirstNamesGender") %>%
     dplyr::select(-.data$PersonCount)
 
-  table <- table %>%
-    dplyr::inner_join(names_gender,
-                      by = stats::setNames(nm = firstname_left, "FirstName")) %>%
+  tbl <- tbl %>%
+    dplyr::left_join(names_gender,
+                     by = stats::setNames(nm = firstname_left, "FirstName")) %>%
     dplyr::mutate(gender = dplyr::case_when(
       .data$ProbabilityFemale >= threshold_prob_female ~ "Female",
       .data$ProbabilityFemale <= 1 - threshold_prob_female ~ "Male")
@@ -63,11 +62,11 @@ define_gender <- function(conn, table, firstname_left, drop_missing) {
     dplyr::select(-.data$ProbabilityFemale)
 
   if (drop_missing) {
-    table <- table %>%
+    tbl <- tbl %>%
       dplyr::filter(!is.na(.data$gender))
   }
 
-  return(table)
+  return(tbl)
 }
 
 
