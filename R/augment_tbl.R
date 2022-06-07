@@ -1,5 +1,40 @@
 
 
+#' Augment a table with additional columns.
+#'
+#' @param tbl A lazily evaluated table from dbplyr.
+#' @param conn An object of the DBIConnection class to a database.
+#' @param with_info Which info should `tbl` be augmented with?
+#' A column vector with the following options, specified as strings:
+#' - affiliation: joins information on unit-year for units in `on_col`
+#' - output: joins research output on unit-year for units in `on_col`
+#' - coauthor: joins the (academic lifetime) co-authors of units in `on_col`
+#' @param on_col On which column should the information be joined? The default
+#' is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
+#' join information on co-authors (see below for details).
+#'
+#' @return A new `tbl` with the columns specified `with_info` added.
+#'
+#' @details There are two main purposes for which this function can be currently
+#' used:
+#' 1. Join output and/or affiliation information to
+#' author units. This works directly with one call to `augment_tbl`.
+#' 2. Join information on affiliations of co-authors
+#' of author units in `tbl`. To do this, you need to call `augment_tbl` twice:
+#' First, to join the co-author information of author units in `tbl`, and then
+#' again to join the affiliations of co-authors,
+#' using the option `on_col = "CoAuthorId`.
+#'
+#' Mixing the purposes is discouraged because it creates duplicated records.
+#'
+#' @export
+#'
+#' @examples \dontrun{
+#' conn <- db_example("AcademicGraph.sqlite")
+#' graduates <- get_links(conn, from = "graduates") %>%
+#' augment_tbl(conn, with_info = "output")
+#' }
+#' @importFrom magrittr %>%
 augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId") {
 
   tbl_classes <- attributes(tbl)$class
@@ -66,23 +101,11 @@ augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId") {
 
   # TODO: add tbl limit and lazy option?
   # TODO: how to name the outputted columns? ie when joining affiliations to co-authors?? --> automatic?
+    # put it into the documentation instead?
 
 }
 
-# dk <- get_links(conn, from = "graduates") %>%
-#   augment_tbl(conn, with_info = c("output", "coauthor"))
 
-
-# for affiliation of co-authors: add option for AuthorId/Co-AuthorId
-# note: can be potentially big (all affiliation-years of all co-authors of advisors). how to deal with it?
-# more generally, joining co-author and any of (affil, output) will result in a large table. how to restrict it?
-# filtering on year? how? but note that this probably leads to a slower query
-
-
-# test1 <- augment_tbl(conn, dk, with_info = c("affiliation", "output"))
-# test2 <- augment_tbl(conn, dk, with_info = c("coauthor"))
-# test3 <- augment_tbl(conn, test2, with_info = c("affiliation"),
-#                      on_col = "CoAuthorId")
 
 # other TODO
   # adjust other functions that use a tbl as input: put tbl in first, conn in second position. check that tbl is lazily evaluated if joins are made on the database

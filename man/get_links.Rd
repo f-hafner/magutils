@@ -7,7 +7,7 @@
 get_links(conn, from, min_score = 0.7, limit = Inf, lazy = TRUE)
 }
 \arguments{
-\item{conn}{An object of the DBIConnection class.}
+\item{conn}{An object of the DBIConnection class to a database.}
 
 \item{from}{The table with the links to be used.
 Must be "advisors" or "graduates"}

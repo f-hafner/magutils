@@ -10,7 +10,9 @@
 
 The goal of magutils is to facilitate loading and extracting data from a
 database with records from Microsoft Academic Graph and ProQuest
-Dissertations. **Work in progress.**
+Dissertations and make the functions available to co-authors and RAs. In
+the future, we may publish a “back-end” package to generate the
+database.
 
 ## Installation
 
@@ -33,7 +35,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpnUspUr/temp_libpath43c0967bb0ba7/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpnUspUr/temp_libpath43c0947284772/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
 #>   pq_fields_mag, pq_unis
 ```

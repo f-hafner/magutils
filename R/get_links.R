@@ -2,7 +2,7 @@
 
 #' Load links between MAG and ProQuest
 #'
-#' @param conn An object of the DBIConnection class.
+#' @param conn An object of the DBIConnection class to a database.
 #' @param from The table with the links to be used.
 #' Must be "advisors" or "graduates"
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
