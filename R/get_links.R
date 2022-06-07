@@ -6,10 +6,10 @@
 #' @param from The table with the links to be used.
 #' Must be "advisors" or "graduates"
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
-#' @param limit LIMIT of the query. A positive integer or Inf.
-#' Default is Inf, in which case all records are returned.
-#' @param lazy If TRUE (the default), does not `collect()` the query into a dataframe.
-#' This is useful if other tables from the database are joined later on.
+#' @param ... additional arguments to be passed on to be passed on to
+#'  \code{\link{make_tbl_output}}.
+#' If not specified, a lazily evaluated table without limit is returned.
+#' Partially specified parameters are completed with \code{\link{dots_tbl_output}}.
 #'
 #' @return A query of linked goid-AuthorId.
 #' @export
@@ -20,8 +20,7 @@
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_links <- function(conn, from, min_score = 0.7,
-                      limit = Inf, lazy = TRUE) {
+get_links <- function(conn, from, min_score = 0.7, ...) {
 
   tbl_info <- list(
     graduates = list(
@@ -33,7 +32,7 @@ get_links <- function(conn, from, min_score = 0.7,
       pq_id = "relationship_id"
     )
   )
-  stopifnot(valid_sql_limit(limit))
+
   stopifnot(is.double(min_score)
             & min_score >= 0
             & min_score <= 1)
@@ -65,9 +64,12 @@ get_links <- function(conn, from, min_score = 0.7,
 
 
   links <- dplyr::tbl(conn,
-                      dbplyr::sql(query_links)) %>%
-    make_tbl_output(limit = limit,
-                    lazy = lazy)
+                      dbplyr::sql(query_links))
+
+  dots <- dots_tbl_output(...)
+  if (!is.null(dots)) {
+    links <- make_tbl_output(links, limit = dots$limit, lazy = dots$lazy)
+  }
 
   return(links)
 }

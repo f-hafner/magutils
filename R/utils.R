@@ -119,6 +119,36 @@ make_tbl_output <- function(tbl, limit, lazy) {
 }
 
 
+#' Helper function to handle dots for making table output
+#'
+#' @param ... Ellipsis, passed on from a higher function
+#'
+#' @return The ellipsis as a list, with defaults for `make_tbl_output` added:
+#' `lazy` is by default `TRUE`, `limit` is by default `Inf`. Thus, if you only
+#' pass on limit = 3, you get a lazily evaluated query.
+#' To safeguard against accidentally loading large queries into memory
+#' by only specifying `lazy = FALSE`, an error is thrown in this case.
+#' @export
+dots_tbl_output <- function(...) {
+  dots <- list(...)
+  if (length(dots > 0)) {
+    if (! "lazy" %in% names(dots)) {
+      dots$lazy = TRUE
+    }
+    if (! "limit" %in% names(dots)) {
+      if (!dots$lazy) {
+        stop("You specified `lazy = FALSE` but did not give a `limit`. If you want to load the query into memory, run the function without specifying neither of `limit` and `lazy` and explicitly `collect` afterwards.")
+      }
+      dots$limit = Inf
+    }
+  }
+  else {
+    dots <- NULL
+  }
+  return(dots)
+}
+
+
 
 #' Extract the names of a lazily evaluated table
 #'

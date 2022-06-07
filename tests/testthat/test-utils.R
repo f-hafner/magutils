@@ -32,3 +32,11 @@ with_mock_db({
   })
 
 })
+
+test_that("dots_tbl_output works properly", {
+  expect_error(dots_tbl_output(lazy = FALSE))
+  expect_equal(dots_tbl_output(lazy = FALSE, limit = 5),
+               list(lazy = FALSE, limit = 5))
+  expect_equal(dots_tbl_output(limit = 5),
+               list(limit = 5, lazy = TRUE)) # here, the order is reversed
+})

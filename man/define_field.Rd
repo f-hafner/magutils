@@ -4,7 +4,7 @@
 \alias{define_field}
 \title{Define the field of study for records in a table.}
 \usage{
-define_field(tbl, conn, from, lazy = TRUE, limit = Inf)
+define_field(tbl, conn, from, ...)
 }
 \arguments{
 \item{tbl}{A tbl on which to add the field of study.}
@@ -13,11 +13,10 @@ define_field(tbl, conn, from, lazy = TRUE, limit = Inf)
 
 \item{from}{A string with options to be queried: "mag_authors" or "graduates".}
 
-\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a
-dataframe. This is useful if other tables from the database are joined later on.}
-
-\item{limit}{LIMIT of the query. A positive integer or Inf.
-Default is Inf, in which case all records are returned.}
+\item{...}{additional arguments to be passed on to be passed on to
+\code{\link{make_tbl_output}}.
+If not specified, a lazily evaluated table without limit is returned.
+Partially specified parameters are completed with \code{\link{dots_tbl_output}}.}
 }
 \value{
 A table with one field name for each person id.

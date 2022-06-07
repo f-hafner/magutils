@@ -4,7 +4,7 @@
 \alias{get_links}
 \title{Load links between MAG and ProQuest}
 \usage{
-get_links(conn, from, min_score = 0.7, limit = Inf, lazy = TRUE)
+get_links(conn, from, min_score = 0.7, ...)
 }
 \arguments{
 \item{conn}{An object of the DBIConnection class to a database.}
@@ -14,11 +14,10 @@ Must be "advisors" or "graduates"}
 
 \item{min_score}{Minimum score for links to accept. Numeric between 0 and 1.}
 
-\item{limit}{LIMIT of the query. A positive integer or Inf.
-Default is Inf, in which case all records are returned.}
-
-\item{lazy}{If TRUE (the default), does not \code{collect()} the query into a dataframe.
-This is useful if other tables from the database are joined later on.}
+\item{...}{additional arguments to be passed on to be passed on to
+\code{\link{make_tbl_output}}.
+If not specified, a lazily evaluated table without limit is returned.
+Partially specified parameters are completed with \code{\link{dots_tbl_output}}.}
 }
 \value{
 A query of linked goid-AuthorId.

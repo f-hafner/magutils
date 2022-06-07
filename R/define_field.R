@@ -4,10 +4,10 @@
 #' @param tbl A tbl on which to add the field of study.
 #' @param conn An object of the DBIConnection class.
 #' @param from A string with options to be queried: "mag_authors" or "graduates".
-#' @param lazy If TRUE (the default), does not `collect()` the query into a
-#' dataframe. This is useful if other tables from the database are joined later on.
-#' @param limit LIMIT of the query. A positive integer or Inf.
-#' Default is Inf, in which case all records are returned.
+#' @param ... additional arguments to be passed on to be passed on to
+#'  \code{\link{make_tbl_output}}.
+#' If not specified, a lazily evaluated table without limit is returned.
+#' Partially specified parameters are completed with \code{\link{dots_tbl_output}}.
 #'
 #' @return
 #' A table with one field name for each person id.
@@ -37,9 +37,8 @@
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-define_field <- function(tbl, conn, from, lazy = TRUE, limit = Inf) {
+define_field <- function(tbl, conn, from, ...) {
 
-  stopifnot(valid_sql_limit(limit))
   stopifnot(from %in% c("mag_authors", "graduates"))
 
   FieldsOfStudy <- dplyr::tbl(conn, "FieldsOfStudy")
@@ -74,9 +73,10 @@ define_field <- function(tbl, conn, from, lazy = TRUE, limit = Inf) {
     dplyr:: left_join(person_field,
                       by = stats::setNames(nm = person_id, person_id))
 
-  out <- make_tbl_output(tbl = out,
-                         limit = limit,
-                         lazy = lazy)
+  dots <- dots_tbl_output(...)
+  if (!is.null(dots)) {
+    out <- make_tbl_output(out, limit = dots$limit, lazy = dots$lazy)
+  }
 
   return(out)
 }

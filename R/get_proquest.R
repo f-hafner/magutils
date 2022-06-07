@@ -5,7 +5,9 @@
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
 #' @param ... additional arguments to be passed on to be passed on to
-#'  \code{\link{make_tbl_output}}
+#'  \code{\link{make_tbl_output}}.
+#' If not specified, a lazily evaluated table without limit is returned.
+#' Partially specified parameters are completed with \code{\link{dots_tbl_output}}.
 #'
 #' @details
 #' For simplicity, does not return the degree year and university information to
@@ -79,15 +81,8 @@ get_proquest <- function(conn, from, start_year = 1985, end_year = 2005, ...) {
                   drop_missing = FALSE)  %>%
     dplyr::select(-.data$firstname_pq)
 
-
-  dots <- list(...)
-  if (length(dots > 0)) {
-    if (! "lazy" %in% names(dots)) {
-      dots$lazy = TRUE
-    }
-    if (! "limit" %in% names(dots)) {
-      dots$limit = Inf
-    }
+  dots <- dots_tbl_output(...)
+  if (!is.null(dots)) {
     out <- make_tbl_output(out, limit = dots$limit, lazy = dots$lazy)
   }
 
@@ -96,7 +91,6 @@ get_proquest <- function(conn, from, start_year = 1985, end_year = 2005, ...) {
 }
 
 
-# update dots: add what is default in docs
 # re-run queries for generating mock dbs and re-test
 
 

@@ -12,7 +12,10 @@
 #' @param on_col On which column should the information be joined? The default
 #' is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 #' join information on co-authors (see below for details).
-#' @param ... Additional arguments to be passed on to \code{\link{make_tbl_output}}.
+#' @param ... additional arguments to be passed on to be passed on to
+#'  \code{\link{make_tbl_output}}.
+#' If not specified, a lazily evaluated table without limit is returned.
+#' Partially specified parameters are completed with \code{\link{dots_tbl_output}}.
 #'
 #' @return A new `tbl` with the columns specified `with_info` added.
 #'
@@ -102,11 +105,8 @@ augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId", ...) {
                        by = join_cols)
   }
 
-  dots <- list(...)
-  if (length(dots > 0)) {
-    if ((! "lazy" %in% names(dots)) | (! "limit" %in% names(dots))) {
-      stop("You need to specify both `lazy` and `limit` in ... .")
-    }
+  dots <- dots_tbl_output(...)
+  if (!is.null(dots)) {
     tbl <- make_tbl_output(tbl, limit = dots$limit, lazy = dots$lazy)
   }
 
