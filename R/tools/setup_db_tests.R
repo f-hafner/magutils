@@ -44,8 +44,8 @@ purrr::map(files,
            ))
 
 
-d_df <- make_tbl_output(d, limit = 2, lazy = FALSE)
-d_lazy <- make_tbl_output(d, limit = 2, lazy = TRUE)
+# d_df <- make_tbl_output(d, limit = 2, lazy = FALSE)
+# d_lazy <- make_tbl_output(d, limit = 2, lazy = TRUE)
 
 
 
@@ -57,7 +57,7 @@ capture_mockdb(production_db = db_file,
                              limit = 1,
                              lazy = FALSE)
                )
-files <- c("SELECT-a1e1ed", "SELECT-aadfe7", "SELECT-db1387")
+files <- c("SELECT-db1387")
 purrr::map(files,
            .f = ~copy_fixture(
              origin = mock_origin,
@@ -89,11 +89,11 @@ capture_mockdb(production_db = db_file,
 )
 
 # Note: some of these here are now deleted and do not exist anymore.. need to clean up!
-files <- c("SELECT-6db156", "SELECT-93beda",
+files <- c("SELECT-6db156",
            "SELECT-f49f96",
-           # added for graduates fields
-           "SELECT-276cf8", "SELECT-7c7feb", "SELECT-7b2796",
-           "SELECT-dfa715", "SELECT-88c04b",
+           "SELECT-276cf8",
+           "SELECT-7c7feb",
+           "SELECT-dfa715",
            "SELECT_-ad0113")
 
 purrr::map(files,

@@ -30,13 +30,18 @@ capture_mockdb <- function(production_db, mock_db = "./tests/testthat/mock_db/",
 #' @param mock_db The path to the mock database containing the fixtures for dittodb.
 #' @param origin The origin directory where dittodb saved the fixutres from capturing
 #' @param filename The name of the file to be copied.
+#' @param verbose Logical. Should filenames be printed?
 #' The filename consist of the first SQL verb of the query (often "SELECT") and the
 #' hash of the query that is sent.
 #' See the dittodb documentation for details.
 #'
 #' @return Copies the fixture from `mock_db/origin/` to `mock_db/`.
 #' @export
-copy_fixture <- function(mock_db = "./tests/testthat/mock_db/", origin, filename) {
+copy_fixture <- function(mock_db = "./tests/testthat/mock_db/", origin,
+                         filename, verbose = FALSE) {
+  if (verbose) {
+    cat(filename, "\n")
+  }
   df_fixt <- source(paste0(mock_db, origin, filename, ".R"),
                     keep.source = FALSE)$value
   # perhaps do some operation: https://dittodb.jonkeane.com/articles/dittodb.html

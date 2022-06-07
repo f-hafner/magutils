@@ -17,7 +17,7 @@ Must be "advisors" or "graduates"}
 \item{...}{additional arguments to be passed on to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
-Partially specified parameters are completed with \code{\link{dots_tbl_output}}.}
+Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
 }
 \value{
 A query of linked goid-AuthorId.

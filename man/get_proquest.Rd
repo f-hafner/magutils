@@ -18,7 +18,7 @@ get_proquest(conn, from, start_year = 1985, end_year = 2005, ...)
 \item{...}{additional arguments to be passed on to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
-Partially specified parameters are completed with \code{\link{dots_tbl_output}}.}
+Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
 }
 \value{
 For graduates, returns a table with degree year, university id,
