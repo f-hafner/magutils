@@ -4,14 +4,21 @@
 \alias{copy_fixture}
 \title{Copy fixtures to make available for tests}
 \usage{
-copy_fixture(mock_db = "./tests/testthat/mock_db/", origin, filename)
+copy_fixture(
+  mock_db = "./tests/testthat/mock_db/",
+  origin,
+  filename,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{mock_db}{The path to the mock database containing the fixtures for dittodb.}
 
 \item{origin}{The origin directory where dittodb saved the fixutres from capturing}
 
-\item{filename}{The name of the file to be copied.
+\item{filename}{The name of the file to be copied.}
+
+\item{verbose}{Logical. Should filenames be printed?
 The filename consist of the first SQL verb of the query (often "SELECT") and the
 hash of the query that is sent.
 See the dittodb documentation for details.}

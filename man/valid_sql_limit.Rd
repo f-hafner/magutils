@@ -7,7 +7,7 @@
 valid_sql_limit(x)
 }
 \arguments{
-\item{x}{An atomic vector.}
+\item{x}{A scalar (numeric or Inf).}
 }
 \value{
 Logical.

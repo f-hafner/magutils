@@ -10,7 +10,9 @@
 
 The goal of magutils is to facilitate loading and extracting data from a
 database with records from Microsoft Academic Graph and ProQuest
-Dissertations. **Work in progress.**
+Dissertations and make the functions available to co-authors and RAs. In
+the future, we may publish a “back-end” package to generate the
+database.
 
 ## Installation
 
@@ -33,28 +35,61 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpeRvjQX/temp_libpath240553121fe6d/magutils/extdata/AcademicGraph.sqlite]
-#> tbls: current_links, FirstNamesGender, pq_authors, pq_unis
+#> src:  sqlite 3.38.5 [/tmp/RtmpPS76lU/temp_libpath47ff15d201ebc/magutils/extdata/AcademicGraph.sqlite]
+#> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
+#>   pq_fields_mag, pq_unis
 ```
 
 Then query the graduate links:
 
 ``` r
-links <- get_graduate_links(conn, lazy = TRUE)
+links <- get_links(conn, from = "graduates", lazy = TRUE)
 ```
 
 Or query info on graduates:
 
 ``` r
-graduates <- authors_proquest(conn, lazy = FALSE, limit = 3)
+graduates <- get_proquest(conn, from = "graduates", lazy = FALSE, limit = 3)
 ```
 
 You can join the two together
 
 ``` r
 library(magrittr)
-links <- get_graduate_links(conn, lazy = TRUE)
-d_full <- authors_proquest(conn, limit = 5) %>%
+links <- get_links(conn, from = "graduates", lazy = TRUE)
+d_full <- get_proquest(conn, from = "graduates", limit = 5) %>%
   dplyr::left_join(links, by = "goid") %>%
   dplyr::collect()
 ```
+
+At the end, do not forget to disconnect from the database:
+
+``` r
+DBI::dbDisconnect(conn)
+```
+
+## Main functions
+
+Extracting key tables
+
+-   `get_proquest`: Source data on dissertations in United States from
+    ProQuest.
+
+-   `get_links`: Load links between ProQuest and MAG. Can be links from
+    PhD graduates to MAG authors, or from PhD advisors to MAG authors
+
+The following functions can be used to get more information from the
+records in the tables above:
+
+-   `graduate_fields`: table with main field of PhD graduates. this is
+    at the unit level
+
+-   `augment_tbl`: augment a table with various additional information:
+
+    -   output
+
+    -   affiliations
+
+    -   co-authors
+
+-   `define_gender`: define the gender of the
