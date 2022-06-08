@@ -14,13 +14,18 @@ define_gender(tbl, conn, firstname_left, drop_missing)
 \item{firstname_left}{Column containing the firstname in \code{table} and to be used for joining gender on.}
 
 \item{drop_missing}{If TRUE, drops records without clear gender assigned.
-Clear assignment is when probability of either gender is >= 0.8}
+Clear assignment is when probability of either gender is 0.8 or higher.}
 }
 \value{
 \code{table} augmented by a gender column.
 }
 \description{
 Define gender based on first name.
+}
+\details{
+Note that  \code{firstname_left} should be free of middle names and middle
+initials, as otherwise the gender assignment fails (even though using only the
+firstname would result in a high-confidence assignment.)
 }
 \examples{
 \dontrun{

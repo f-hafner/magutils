@@ -35,7 +35,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpPS76lU/temp_libpath47ff15d201ebc/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.38.5 [/tmp/RtmpP5O8W5/temp_libpath4c9bc5b3501e5/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
 #>   pq_fields_mag, pq_unis
 ```
@@ -78,18 +78,19 @@ Extracting key tables
 -   `get_links`: Load links between ProQuest and MAG. Can be links from
     PhD graduates to MAG authors, or from PhD advisors to MAG authors
 
-The following functions can be used to get more information from the
-records in the tables above:
+-   `define_field`: define the field of study for records in a table.
 
--   `graduate_fields`: table with main field of PhD graduates. this is
-    at the unit level
+-   `define_gender`: define gender of a table of persons with
+    firstnames.
 
 -   `augment_tbl`: augment a table with various additional information:
+    output, affiliations, co-authors. Because `output` and
+    `affiliations` are at the unit-year level, the result will be a
+    table at the unit-year level. I am not sure if this is the best way
+    to do it (also the naming wrt to the previous functions), but we
+    have to see how it works in practice.
 
-    -   output
+## Suggested usage
 
-    -   affiliations
-
-    -   co-authors
-
--   `define_gender`: define the gender of the
+Load the links and/or proquest data, augment them as necessary, and then
+`collect` into memory.

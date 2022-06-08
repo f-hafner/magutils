@@ -81,20 +81,17 @@ Extracting key tables
 
 - `get_links`: Load links between ProQuest and MAG. Can be links from PhD graduates to MAG authors, or from PhD advisors to MAG authors
 
+- `define_field`: define the field of study for records in a table. 
 
-The following functions can be used to get more information from the records in the tables above:
+- `define_gender`: define gender of a table of persons with firstnames.
 
-- `graduate_fields`: table with main field of PhD graduates. this is at the unit level
-
-- `augment_tbl`: augment a table with various additional information:
-
-  - output
+- `augment_tbl`: augment a table with various additional information: output, affiliations, co-authors. Because `output` and `affiliations` are at the unit-year level, the result will be a table at the unit-year level. I am not sure if this is the best way to do it (also the naming wrt to the previous functions), but we have to see how it works in practice. 
   
-  - affiliations 
-  
-  - co-authors
 
-- `define_gender`: define the gender of the 
+## Suggested usage 
+
+Load the links and/or proquest data, augment them as necessary, and then `collect` into memory.
+
 
 
 

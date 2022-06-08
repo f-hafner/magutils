@@ -32,10 +32,15 @@ connect_to_db <- function(db_file) {
 #' @param tbl A lazily evaluated table sourced from `conn`.
 #' @param conn An object of the DBIConnection class.
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
-#' Clear assignment is when probability of either gender is >= 0.8
+#' Clear assignment is when probability of either gender is 0.8 or higher.
 #' @param firstname_left Column containing the firstname in `table` and to be used for joining gender on.
 #'
 #' @return `table` augmented by a gender column.
+#'
+#' @details Note that  `firstname_left` should be free of middle names and middle
+#' initials, as otherwise the gender assignment fails (even though using only the
+#' firstname would result in a high-confidence assignment.)
+#'
 #' @export
 #'
 #' @examples \dontrun{
@@ -123,7 +128,7 @@ make_tbl_output <- function(tbl, limit, lazy) {
 #'
 #' @param ... Ellipsis, passed on from a higher function
 #'
-#' @return The ellipsis as a list, with defaults for `make_tbl_output` added:
+#' @return A named list built from `...`, with defaults for `make_tbl_output` added:
 #' `lazy` is by default `TRUE`, `limit` is by default `Inf`. Thus, if you only
 #' pass on limit = 3, you get a lazily evaluated query.
 #' To safeguard against accidentally loading large queries into memory

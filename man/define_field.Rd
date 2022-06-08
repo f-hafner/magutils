@@ -28,7 +28,7 @@ The person id is \code{AuthorId} for \code{from} = "mag_authors" and
 Define the field of study for records in a table.
 }
 \details{
-\subsection{When using \code{from}= "graduates"}{
+\subsection{When using \code{from} = "graduates"}{
 
 The field is defined with a custom mapping between the reported field of
 study in ProQuest and the fields in MAG. The mapping is stored in the
@@ -40,7 +40,7 @@ In future, this may be made more flexible to consider any of the reported
 fields in ProQuest.
 }
 
-\subsection{When using \code{from} = mag_authors}{
+\subsection{When using \code{from} = "mag_authors"}{
 
 Returns the one field for which the person is observed the most likely to
 publish over their career. The field is defined based on a confidence score
