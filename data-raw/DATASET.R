@@ -23,6 +23,7 @@ db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
 example_dir <- "./inst/extdata/"
 example_file <- "AcademicGraph.sqlite"
 
+
 # Connections
 conn <- connect_to_db(db_file = db_file)
 example_con <- connect_to_db(db_file = paste0(example_dir, example_file))

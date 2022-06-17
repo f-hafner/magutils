@@ -24,19 +24,15 @@ The package operates on a relational database of bibliometric data from Microsof
 
 ```{r}
 
-# TODO: change to small db replicate!
-
-# db_file <- db_example("AcademicGraph.sqlite")
-db_file <- "/mnt/ssd/AcademicGraph/AcademicGraph.sqlite"
+db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
-
 
 ```
 The `tbls` output above shows the all tables in the database.
 
-# Introducing the database
+## Introducing the database
 
-## Overview
+### Overview
 
 The database contains some of the tables originally in MAG and custom tables created by us. The tables taken from MAG have the same name as in MAG; the schema to their database is [here](https://docs.microsoft.com/en-us/academic-services/graph/reference-data-schema#paper-fields-of-study).
 
@@ -51,11 +47,11 @@ Tables from ProQuest data are indicated with a "pq_" prefix; they and their colu
 
 
 
-## Database structure
+### Database structure
 The following describes each table; columns irrelevant to the package are omitted.
 
 
-### `current_links` and `current_links_advisors`
+#### Tables `current_links` and `current_links_advisors`
 
 Tables with links between records in MAG and ProQuest. They are created outside of the package. 
 
@@ -72,14 +68,14 @@ The identifier in ProQuest differs:
 - for `current_links_advisors`, it is relationship_id: the combination of dissertation identifier and position of the reported advisor.
 
 
-### `FieldsOfStudy`
+#### Table `FieldsOfStudy`
  
 The fields of study as classified by MAG. The relevant columns are 
  
 - FieldOfStudyId: field identifier.
 - NormalizedName: the name of the field.
 
-### `FirstNamesGender`
+#### Table `FirstNamesGender`
 
 Maps first names to gender; data from genderize.io. Columns:
 
@@ -87,7 +83,7 @@ Maps first names to gender; data from genderize.io. Columns:
 - ProbabilityFemale: probability that a person with `FirstName` is female.
 
 
-### `pq_authors`
+#### Table `pq_authors`
 
 Table with authors of PhD dissertations from ProQuest. The relevant columns are:
 
@@ -98,7 +94,7 @@ Table with authors of PhD dissertations from ProQuest. The relevant columns are:
 - university_id: identifier of the university.
 - thesistitle: title of the thesis, normalized to match the paper titles in MAG.
 
-### `pq_fields_mag`
+#### Table `pq_fields_mag`
 
 The fields of the dissertation and their corresponding field (level 0) in MAG.
 
@@ -107,7 +103,7 @@ The fields of the dissertation and their corresponding field (level 0) in MAG.
 - fieldname: the field name as reported in ProQuest
 - mag_field0: the corresponding field0 in MAG. We make this correspondence based on similarity of field names and on some tables of fields from the OECD.
 
-### `pq_unis`
+#### Table `pq_unis`
 
 Universities in ProQuest
 
@@ -115,7 +111,7 @@ Universities in ProQuest
 - normalizedname: name of the university
 - location: location of the university. Not standardized, but location of U.S. universities have all a "United States" string in them.
 
-### `pq_advisors`
+#### Table `pq_advisors`
 
 The dissertation advisors.
 
@@ -127,7 +123,7 @@ The dissertation advisors.
 Note that advisors do not have their own unique identifier.
 
 
-## Getting information on the database
+### Getting information on the database
 
 We can query information from the database schema with some custom functions.
 
@@ -146,10 +142,10 @@ DBI::dbClearResult(res)
 
 ```
 
-# Using the package
+## Using the package
 
 
-## Loading data from proquest: `get_proquest`
+### Loading data from proquest: `get_proquest`
 
 The function loads the dissertations written in the United States (available in ProQuest) between `start_year` and `end_year`. 
 The underlying table used for the output depends on `from` and is thus either `pq_authors` when querying "graduates" or `pq_advisors` when querying "advisors".
@@ -174,7 +170,7 @@ Alternatively, we can query advisors:
 
 ```{r}
 
-advisors <- get_proquest(conn, from = "advisors") #TODO: add pq_advisors table for this function
+advisors <- get_proquest(conn, from = "advisors") 
 head(advisors)
 
 ```
@@ -183,7 +179,7 @@ Important here is that the gender refers to the advisor. If we wanted to study s
 
 
 
-## Loading the links: `get_links`
+### Loading the links: `get_links`
 
 This returns the links between records in MAG and in ProQuest. With `from = "graduates"`, we get the links from `current_links`. With `from = "advisors"`, we get the links from `current_links_advisors`. 
 
@@ -205,7 +201,7 @@ As stated in the message, we suspect the links between advisors need a higher `m
 
 
 
-## Adding information to records: `augment_tbl` 
+### Adding information to records: `augment_tbl` 
 
 The function has two purposes:
 
@@ -214,15 +210,16 @@ The function has two purposes:
 2. Join information on affiliations of co-authors of author units
 
 
-### Join output or affiliation information to author units 
+#### Join output or affiliation information to author units 
 
 The tables used to augment `tbl` contain multiple rows per AuthorId, as the following example illustrates:
 
 
 ```{r}
 
-graduates_affiliation <- get_links(conn = conn,
-                            from = "graduates") %>%
+graduates_affiliation <- get_links(
+    conn = conn,
+    from = "graduates") %>%
   augment_tbl(conn = conn,
               with = "affiliation") 
 
@@ -236,13 +233,13 @@ The function checks if there is already a `Year` column in the `tbl`, and if so,
 
 
 
-### Join information on affiliations of co-authors of author units.
+#### Join information on affiliations of co-authors of author units.
 
 TBD.
 
 
 
-## Processing after querying
+### Processing after querying
 
 When should you load the data into memory with `collect()`? I suggest to do as many operations as possible on the database with `dbplyr`. That said, when data from ProQuest and MAG are combined, the resulting tables are usually not very large and should fit into memory.
 
