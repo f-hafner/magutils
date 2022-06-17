@@ -21,7 +21,7 @@ You can install the development version of magutils from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("f-hafner/magutils")
+devtools::install_github("f-hafner/magutils", build_vignettes = TRUE)
 ```
 
 ## Example
@@ -35,9 +35,10 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpP5O8W5/temp_libpath4c9bc5b3501e5/magutils/extdata/AcademicGraph.sqlite]
-#> tbls: current_links, FieldsOfStudy, FirstNamesGender, pq_authors,
-#>   pq_fields_mag, pq_unis
+#> src:  sqlite 3.38.5 [/tmp/RtmpOOS3Cx/temp_libpath3eff04106586a/magutils/extdata/AcademicGraph.sqlite]
+#> tbls: author_coauthor, author_output, AuthorAffiliation, current_links,
+#>   current_links_advisors, FieldsOfStudy, FirstNamesGender, pq_advisors,
+#>   pq_authors, pq_fields_mag, pq_unis
 ```
 
 Then query the graduate links:
@@ -94,3 +95,5 @@ Extracting key tables
 
 Load the links and/or proquest data, augment them as necessary, and then
 `collect` into memory.
+
+For more details, `browseVignettes("magutils")`.

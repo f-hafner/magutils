@@ -27,7 +27,7 @@ You can install the development version of magutils from [GitHub](https://github
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("f-hafner/magutils")
+devtools::install_github("f-hafner/magutils", build_vignettes = TRUE)
 ```
 
 ## Example
@@ -90,7 +90,9 @@ Extracting key tables
 
 ## Suggested usage 
 
-Load the links and/or proquest data, augment them as necessary, and then `collect` into memory. See the vignette for more details.
+Load the links and/or proquest data, augment them as necessary, and then `collect` into memory.
+
+For more details, `browseVignettes("magutils")`. 
 
 
 

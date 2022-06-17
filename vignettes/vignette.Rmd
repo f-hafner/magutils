@@ -23,11 +23,10 @@ library(magrittr)
 The package operates on a relational database of bibliometric data from Microsoft Academic Graph and dissertation data from ProQuest. To illustrate the usage, the package ships with a small replicate of the database with the necessary tables. Let's load the database:
 
 ```{r}
-
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
-
 ```
+
 The `tbls` output above shows the all tables in the database.
 
 ## Introducing the database
@@ -43,7 +42,6 @@ Tables from MAG are named with CamelCase, as in the original database; custom ta
 Columns in MAG tables are named with CamelCase; columns in custom tables can be named either with CamelCase or snake_case.
 
 Tables from ProQuest data are indicated with a "pq_" prefix; they and their columns are named with snake_case. 
-
 
 
 
@@ -132,14 +130,12 @@ We can use the following query to see the specific contents of each table:
 *TODO: use the simple function here when written*
 
 ```{r}
-
 res <- DBI::dbSendQuery(
   conn = conn,
   statement = "select sql from sqlite_master where tbl_name = 'current_links' and type = 'table' "
 )
 DBI::dbFetch(res)
 DBI::dbClearResult(res)
-
 ```
 
 ## Using the package
@@ -155,10 +151,8 @@ Let's see an example:
 
 
 ```{r}
-
 graduates <- get_proquest(conn, from = "graduates", lazy = FALSE, limit = 3)
 head(graduates)
-
 ```
 
 The output consists of the following:
@@ -169,10 +163,8 @@ The output consists of the following:
 Alternatively, we can query advisors:
 
 ```{r}
-
 advisors <- get_proquest(conn, from = "advisors") 
 head(advisors)
-
 ```
 
 Important here is that the gender refers to the advisor. If we wanted to study student-advisor matches, we could join the output from "graduates" to the output from "advisors", using the column `goid` for the join. Note that a student can have multiple advisors, as indicated by the `position` column.
@@ -191,10 +183,8 @@ head(links)
 
 
 ```{r}
-
 links <- get_links(conn, from = "advisors", lazy = TRUE)
 head(links)
-
 ```
 
 As stated in the message, we suspect the links between advisors need a higher `min_score` constraint to omit many false positives.
@@ -216,7 +206,6 @@ The tables used to augment `tbl` contain multiple rows per AuthorId, as the foll
 
 
 ```{r}
-
 graduates_affiliation <- get_links(
     conn = conn,
     from = "graduates") %>%
@@ -224,7 +213,6 @@ graduates_affiliation <- get_links(
               with = "affiliation") 
 
 head(graduates_affiliation)
-
 ```
 
 For each `AuthorId`, we have one row for each year in which there is at least one paper with a reported affiliation of the author. 
@@ -242,9 +230,6 @@ TBD.
 ### Processing after querying
 
 When should you load the data into memory with `collect()`? I suggest to do as many operations as possible on the database with `dbplyr`. That said, when data from ProQuest and MAG are combined, the resulting tables are usually not very large and should fit into memory.
-
-
-
 
 
 
