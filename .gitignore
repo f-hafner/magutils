@@ -4,3 +4,6 @@
 .httr-oauth
 .DS_Store
 tests/testthat/mock_db/_mnt_ssd_*
+inst/doc
+/doc/
+/Meta/

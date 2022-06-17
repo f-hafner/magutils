@@ -5,3 +5,5 @@
 ^R/aux$
 ^\.github$
 ^data-raw$
+^doc$
+^Meta$
