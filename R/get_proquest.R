@@ -4,7 +4,7 @@
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
-#' @param ... additional arguments to be passed on to be passed on to
+#' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
@@ -18,6 +18,7 @@
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' d_graduates <- get_proquest(conn = conn, from = "graduates")
+#' d_advisors <- get_proquest(conn = conn, from = "advisors")
 #'
 #' @return
 #' For graduates, returns a table with degree year, university id,

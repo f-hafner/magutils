@@ -12,7 +12,7 @@
 #' @param on_col On which column should the information be joined? The default
 #' is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 #' join information on co-authors (see below for details).
-#' @param ... additional arguments to be passed on to be passed on to
+#' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
@@ -34,11 +34,11 @@
 #'
 #' @export
 #'
-#' @examples \dontrun{
-#' conn <- db_example("AcademicGraph.sqlite")
-#' graduates <- get_links(conn, from = "graduates") %>%
-#' augment_tbl(conn, with_info = "output")
-#' }
+#' @examples 
+#' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+#' graduates <- get_links(conn, from = "graduates") 
+#' graduates <- augment_tbl(graduates, conn, with_info = "output")
+#' 
 #' @importFrom magrittr %>%
 augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId", ...) {
 

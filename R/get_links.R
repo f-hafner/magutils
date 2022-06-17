@@ -6,7 +6,7 @@
 #' @param from The table with the links to be used.
 #' Must be "advisors" or "graduates"
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
-#' @param ... additional arguments to be passed on to be passed on to
+#' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
@@ -16,7 +16,8 @@
 #'
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-#' links <- get_links(conn, from = "graduates", min_score = 0.7)
+#' graduate_links <- get_links(conn, from = "graduates", min_score = 0.7)
+#' advisor_links <- get_links(conn, from = "advisors", min_score = 0.7)
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%

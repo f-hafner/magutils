@@ -4,7 +4,7 @@
 #' @param tbl A tbl on which to add the field of study.
 #' @param conn An object of the DBIConnection class.
 #' @param from A string with options to be queried: "mag_authors" or "graduates".
-#' @param ... additional arguments to be passed on to be passed on to
+#' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
