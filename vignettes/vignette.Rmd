@@ -1,0 +1,143 @@
+---
+title: "vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(magutils)
+```
+
+
+The package operates on a relational database of bibliometric data from Microsoft Academic Graph and dissertation data from ProQuest. To illustrate the usage, the package ships with a small replicate of the database with the necessary tables. Let's load the database:
+
+```{r}
+
+db_file <- db_example("AcademicGraph.sqlite")
+conn <- connect_to_db(db_file)
+
+
+```
+The `tbls` output above shows the all tables in the database.
+
+# Database structure
+
+The database contains both some of the tables originally in MAG and custom tables created by us. The original MAG table schema can be found [here](https://docs.microsoft.com/en-us/academic-services/graph/reference-data-schema#paper-fields-of-study).
+
+
+## `current_links`
+Contains the links between MAG and ProQuest. It is currently created outside of the package. The table has the following columns (columns irrelevant for the package are omitted).
+
+- AuthorId: The author identifier in MAG.
+- goid: The dissertation identifier in ProQuest.
+- link_score: The probability $\in [0, 1]$ that the linked entities are truely the same. Calculated from the linking algorithm not part of the package.
+- iteration_id: The iteration identifer of the linking algorithm; not relevant for this package.
+
+
+## `FieldsOfStudy`
+ 
+The fields of study as classified by MAG. The relevant columns are 
+ 
+- FieldOfStudyId: field identifier.
+- NormalizedName: the name of the field.
+
+## `FirstNamesGender`
+
+Maps first names to gender; data from genderize.io. Columns:
+
+- FirstName: string of first name
+- ProbabilityFemale: probability that a person with `FirstName` is female.
+
+
+## `pq_authors`
+
+Table with authors of PhD dissertations from ProQuest. The relevant columns are:
+
+- goid 
+- fullname, firstname
+- degree_year: year of PhD degree.
+- degree_level: level of the degree; usually PhD or similar.
+- university_id: identifier of the university.
+- thesistitle: title of the thesis, normalized to match the paper titles in MAG.
+
+## `pq_fields_mag`
+
+The fields of the dissertation and their corresponding field (level 0) in MAG.
+
+- goid
+- position: position, starting at 0, as reported in the xml files of the dissertation. The ordering has, to our knowledge, no meaning; but some dissertations have only one field.
+- fieldname: the field name as reported in ProQuest
+- mag_field0: the corresponding field0 in MAG. We make this correspondence based on similarity of field names and on some tables of fields from the OECD.
+
+## `pq_unis`
+
+Universities in ProQuest
+
+- university_id: university identifer
+- normalizedname: name of the university
+- location: location of the university. Not standardized, but location of U.S. universities have all a "United States" string in them.
+
+
+
+We can use the following query to see the specific contents of each table: 
+
+*TODO: use the simple function here when written*
+
+```{r}
+
+res <- DBI::dbSendQuery(
+  conn = conn,
+  statement = "select sql from sqlite_master where tbl_name = 'current_links' and type = 'table' "
+)
+DBI::dbFetch(res)
+DBI::dbClearResult(res)
+
+```
+
+# Using the package
+
+
+## 
+
+
+
+Extracting key tables
+
+- `get_proquest`: Source data on dissertations in United States from ProQuest.
+
+- `get_links`: Load links between ProQuest and MAG. Can be links from PhD graduates to MAG authors, or from PhD advisors to MAG authors
+
+- `define_field`: define the field of study for records in a table. 
+
+- `define_gender`: define gender of a table of persons with firstnames.
+
+- `augment_tbl`: augment a table with various additional information: output, affiliations, co-authors. Because `output` and `affiliations` are at the unit-year level, the result will be a table at the unit-year level. I am not sure if this is the best way to do it (also the naming wrt to the previous functions), but we have to see how it works in practice. 
+  
+
+```{r}
+DBI::dbDisconnect(conn)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
