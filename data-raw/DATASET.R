@@ -29,15 +29,23 @@ example_con <- connect_to_db(db_file = paste0(example_dir, example_file))
 
 
 # Source some ids for which we have all the data
-graduates <- get_graduate_links(conn = conn, limit = 10, lazy = FALSE)
+graduates <- get_links(conn = conn, from = "graduates",
+                       limit = 10, lazy = FALSE)
 
 mag_ids <- graduates$AuthorId
 pq_ids <- graduates$goid
 
 
-# Create tables according to function in pkg
+advisors <- get_links(conn = conn, from = "advisors",
+                      limit = 10, lazy = FALSE)
 
-## 1. current_links
+mag_ids_advisors <- advisors$AuthorId
+pq_ids_advisors <- advisors$relationship_id
+
+
+# Create tables according to functions in pkg
+
+## 1. a) current_links
 qry <- paste0("SELECT * FROM current_links WHERE AuthorId IN (",
             paste(mag_ids, collapse = ", "),
             ")")
@@ -54,8 +62,30 @@ send_db_stmt(conn = example_con,
                             current_links (AuthorId ASC, goid ASC)"
              )
 
+## 1. b) current_links_advisors
+qry <- paste0("SELECT * FROM current_links_advisors WHERE AuthorId IN (",
+              paste(mag_ids_advisors, collapse = ", "),
+              ")")
 
-## 2. proquest authors
+current_links_advisors <- tbl(conn, sql(qry)) %>% collect()
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "current_links_advisors",
+                      value = current_links_advisors,
+                      overwrite = TRUE)
+
+idx_cla <- c(
+  "CREATE UNIQUE INDEX idx_cla_AuthorIdrelid
+    ON current_links_advisors (AuthorId ASC, relationship_id ASC)",
+  "CREATE INDEX idx_cla_relid on current_links_advisors (relationship_id ASC)"
+)
+
+purrr::map(idx_cla,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
+
+## 2. proquest authors / advisors
 
 qry <- paste0("
   SELECT goid, firstname, degree_year, university_id
@@ -84,6 +114,45 @@ purrr::map(idx_authors,
            .f = ~send_db_stmt(conn = example_con, stmt = .x)
            )
 
+### pq_advisors table
+  # need both for links and for get_proquest
+
+qry <- paste0("
+  SELECT goid, position, lastname, relationship_id
+    , SUBSTR(TRIM(firstname),
+                  1, instr(trim(firstname)||' ',' ') - 1)
+      AS firstname
+  FROM pq_advisors
+  WHERE relationship_id IN (",
+              paste(
+                paste0("'",
+                       pq_ids_advisors,
+                       "'"),
+                collapse = ", "),
+              ")
+    -- ## also add the advisor or graduates in the db
+    OR goid IN (",  paste(pq_ids, collapse = ", "),   ")"
+)
+
+
+pq_advisors <- tbl(conn, sql(qry)) %>% collect()
+advisor_firstnames <- unique(pq_advisors$firstname) # TODO: add to firstnamesgender to keep!
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "pq_advisors",
+                      value = pq_advisors,
+                      overwrite = TRUE)
+
+idx_advisors <- c(
+  "CREATE UNIQUE INDEX idx_pqav_relid ON pq_advisors (relationship_id ASC)",
+  "CREATE INDEX idx_pqadv_fname ON pq_advisors (firstname ASC)",
+  "CREATE INDEX idx_pqadv_idpos ON pq_advisors (goid ASC)"
+)
+
+purrr::map(idx_advisors,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
 ### pq_unis table
 qry <- paste0("
   SELECT university_id, location
@@ -105,11 +174,14 @@ send_db_stmt(conn = example_con,
 
 
 ### FirstNamesGender table
+firstnames_keep <- unique(
+  c(author_firstnames, advisor_firstnames)
+)
 qry <- paste0("
   SELECT FirstName, PersonCount, ProbabilityFemale
   FROM FirstNamesGender
   WHERE FirstName IN (",
-  paste0(paste0("'", author_firstnames, "'"), collapse = ", "),
+  paste0(paste0("'", firstnames_keep, "'"), collapse = ", "),
   ")"
 )
 
@@ -175,6 +247,97 @@ idx_fos <- c(
 purrr::map(idx_fos,
            .f = ~send_db_stmt(conn = example_con, stmt = .x)
 )
+
+
+## 3. affiliations, co-authors and output of the relevant mag ids
+mag_ids_keep <- unique(c(mag_ids, mag_ids_advisors))
+
+### Affiliations
+qry <- paste0("
+  SELECT *
+  FROM AuthorAffiliation
+  WHERE AuthorId IN (", paste0(mag_ids_keep, collapse = ", "), ")"
+)
+
+AuthorAffiliation <- tbl(conn, sql(qry)) %>%
+  collect() %>%
+  # keep only 2 obs per person
+  group_by(AuthorId) %>%
+  filter(row_number() <= 2)
+
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "AuthorAffiliation",
+                      value = AuthorAffiliation,
+                      overwrite = TRUE)
+
+idx_aa <- c(
+  "CREATE UNIQUE INDEX idx_aa_AuthorAffilYear ON
+    AuthorAffiliation (AuthorId ASC, AffiliationId ASC, YEAR)",
+  "CREATE INDEX idx_aa_Affil ON AuthorAffiliation (AffiliationId ASC)"
+)
+
+purrr::map(idx_aa,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
+### Output
+qry <- paste0("
+  SELECT AuthorId, Year, PaperCount, TotalForwardCitations
+  FROM author_output
+  WHERE AuthorId IN (", paste0(mag_ids_keep, collapse = ", "), ")"
+)
+
+author_output <- tbl(conn, sql(qry)) %>%
+  collect() %>%
+  # keep only 2 obs per person
+  group_by(AuthorId) %>%
+  filter(row_number() <= 2)
+
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "author_output",
+                      value = author_output,
+                      overwrite = TRUE)
+
+idx_aa <- c(
+  "CREATE UNIQUE INDEX idx_ao_AuthorIdYear ON
+    author_output (AuthorId ASC, YEAR)"
+)
+
+purrr::map(idx_aa,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
+
+### Co-Authors
+qry <- paste0("
+  SELECT AuthorId, CoAuthorId
+  FROM author_coauthor
+  WHERE AuthorId IN (", paste0(mag_ids_keep, collapse = ", "), ")"
+)
+
+author_coauthor <- tbl(conn, sql(qry)) %>%
+  collect() %>%
+  # keep only 2 obs per person
+  group_by(AuthorId) %>%
+  filter(row_number() <= 2)
+
+
+RSQLite::dbWriteTable(conn = example_con,
+                      name = "author_coauthor",
+                      value = author_coauthor,
+                      overwrite = TRUE)
+
+idx_aco <- c(
+  "CREATE UNIQUE INDEX idx_aco_AuthorIdCoAuthorId ON
+    author_coauthor (AuthorId ASC, CoAuthorId ASC)"
+)
+
+purrr::map(idx_aco,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x)
+)
+
 
 
 DBI::dbDisconnect(conn)

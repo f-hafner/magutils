@@ -13,7 +13,7 @@ define_field(tbl, conn, from, ...)
 
 \item{from}{A string with options to be queried: "mag_authors" or "graduates".}
 
-\item{...}{additional arguments to be passed on to be passed on to
+\item{...}{additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}

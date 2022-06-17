@@ -23,7 +23,7 @@ A column vector with the following options, specified as strings:
 is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 join information on co-authors (see below for details).}
 
-\item{...}{additional arguments to be passed on to be passed on to
+\item{...}{additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
@@ -50,9 +50,8 @@ using the option \verb{on_col = "CoAuthorId}.
 Mixing the purposes is discouraged because it creates duplicated records.
 }
 \examples{
-\dontrun{
-conn <- db_example("AcademicGraph.sqlite")
-graduates <- get_links(conn, from = "graduates") \%>\%
-augment_tbl(conn, with_info = "output")
-}
+conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
+graduates <- get_links(conn, from = "graduates") 
+graduates <- augment_tbl(graduates, conn, with_info = "output")
+
 }
