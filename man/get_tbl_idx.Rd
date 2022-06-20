@@ -4,12 +4,16 @@
 \alias{get_tbl_idx}
 \title{Extract the table indexes from a table}
 \usage{
-get_tbl_idx(conn, tbl)
+get_tbl_idx(conn, tbl, temp = FALSE)
 }
 \arguments{
 \item{conn}{A DBI connection to a sqlite database.}
 
 \item{tbl}{The name of the table.}
+
+\item{temp}{Should \code{sqlite_temp_master} be queried, instead of \code{sqlite_master}?
+Default is FALSE. This can be useful when looking for temporary tables and
+indexes on them.}
 }
 \value{
 A named list of lists. Each list corresponds to one index on \code{tbl}.

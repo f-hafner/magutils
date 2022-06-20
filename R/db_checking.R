@@ -1,7 +1,7 @@
 
 # Some helper functions to check indexes on a table and possibly more
 
-# Use cases
+# Possible use cases
   # 1. does a table have a (unique) index on some columns? (implemented)
   # 2. list all indexes that are formed on that column (not implented)
   # 3. which columns does index x cover? (not implemented)
@@ -16,6 +16,9 @@
 #'
 #' @param conn A DBI connection to a sqlite database.
 #' @param tbl The name of the table.
+#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
+#' Default is FALSE. This can be useful when looking for temporary tables and
+#' indexes on them.
 #'
 #' @return A named list of lists. Each list corresponds to one index on `tbl`.
 #' A elements (top-level) of the list are named according to the name of the
@@ -28,8 +31,9 @@
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' get_tbl_idx(conn, "author_output")
-get_tbl_idx <- function(conn, tbl) {
-  df <- sqlite_master_to_df(conn) %>%
+get_tbl_idx <- function(conn, tbl, temp = FALSE) {
+
+  df <- sqlite_master_to_df(conn, temp = temp) %>%
     dplyr::filter(.data[["tbl_name"]] == tbl & .data[["type"]] == "index") %>%
     dplyr::mutate(sql = tidy_string(.data[["sql"]]),
                   idx_unique = grepl("create unique index",
@@ -37,9 +41,10 @@ get_tbl_idx <- function(conn, tbl) {
                                      )
     )
 
+
   out <- apply(df, 1, function(x) {
     out <- list(
-      idx_unique = x[["idx_unique"]],
+      idx_unique = as.logical(x[["idx_unique"]]),
       idx_cols = get_idx_cols(x[["sql"]])
     )
   })
@@ -60,6 +65,9 @@ get_tbl_idx <- function(conn, tbl) {
 #' @param on_cols A character vector with the columns to check.
 #' @param keep_unique A logical. Additionally check if the index has the
 #' UNIQUE constraint. Default is FALSE.
+#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
+#' Default is FALSE. This can be useful when looking for temporary tables and
+#' indexes on them.
 #'
 #' @return A logical.
 #' @details The function only checks *exact* matching of `on_cols`, that is, the
@@ -71,10 +79,10 @@ get_tbl_idx <- function(conn, tbl) {
 #'
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-#' has_index(conn, "author_output", "AuthorId", keep_unique = TRUE)
-has_index <- function(conn, tbl, on_cols, keep_unique = FALSE) {
+#' has_idx(conn, "author_output", "AuthorId", keep_unique = TRUE)
+has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
-  indexes <- get_tbl_idx(conn, tbl = tbl)
+  indexes <- get_tbl_idx(conn, tbl = tbl, temp = temp)
   has_index <- sapply(indexes, function(x) {
     identical(x[["idx_cols"]], on_cols)
   })
@@ -101,6 +109,9 @@ has_index <- function(conn, tbl, on_cols, keep_unique = FALSE) {
 #' Transform sqlite_master table to a dataframe.
 #'
 #' @param conn An object of the DBIConnection class.
+#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
+#' Default is FALSE. This can be useful when looking for temporary tables and
+#' indexes on them.
 #'
 #' @return A dataframe with type, name, tbl_name and sql statement
 #' from sqlite_master.
@@ -109,10 +120,13 @@ has_index <- function(conn, tbl, on_cols, keep_unique = FALSE) {
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' sqlite_master_to_df(conn)
-sqlite_master_to_df <- function(conn) {
+sqlite_master_to_df <- function(conn, temp = FALSE) {
+
+  src_tbl <- "sqlite_master"
+  if (temp) src_tbl <- "sqlite_temp_master"
   res <- DBI::dbSendQuery(
     conn = conn,
-    statement = "select type, name, tbl_name, sql from sqlite_master"
+    statement = paste0("select type, name, tbl_name, sql from ", src_tbl)
   )
   df <- DBI::dbFetch(res) # returns a df with the relevant information
   DBI::dbClearResult(res)
@@ -151,6 +165,11 @@ tidy_string <- function(s) {
 #' magutils:::get_idx_cols("CREATE INDEX idx1 ON mytable (col1 ASC, col2 ASC)")
 #' # gives  c("col1", "col2")
 get_idx_cols <- function(stmt) {
+
+  if (!grepl("create index|create unique index", tolower(stmt))) {
+    stop("This statement does not seem to create an index.")
+  }
+
   start <- gregexpr( "(?=\\()", stmt, perl = TRUE)[[1]][1] # positive look-ahead
   end <- gregexpr( "(?<=\\))", stmt, perl = TRUE)[[1]][1] # positive look-behind
 
@@ -161,6 +180,9 @@ get_idx_cols <- function(stmt) {
   out <- strsplit(idx_cols, ",")[[1]]
   # out <- lapply(out, trimws)
   out <- sapply(out, trimws, USE.NAMES = F)
+  if (length(out) == 0) {
+    stop("Could not extract any columns. Are you sure `stmt` is correctly specified?")
+  }
 
   return(out)
 }
