@@ -15,18 +15,22 @@ with_mock_db({
   graduates_output <- augment_tbl(graduates, con, with_info = "output",
                                   lazy = FALSE, limit = 1)
 
-  test_that("we cannot pass dataframes ", {
-    expect_error(augment_tbl(df, con, with_info = "affiliation"))
+  error_nonvalid_args <- "Non-valid arguments."
+
+  test_that("augment_tbl() does not accept dataframes", {
+    expect_error(augment_tbl(df, con, with_info = "affiliation"),
+                 regexp = error_nonvalid_args)
   })
 
-  test_that("we get an error when passing wrong options ", {
-    expect_error(augment_tbl(graduates, con, with_info = "affil"))
-    expect_error(augment_tbl(graduates, con))
+  test_that("augment_tbl() gives an error when passing wrong options ", {
+    expect_error(augment_tbl(graduates, con, with_info = "affil"),
+                 regexp = error_nonvalid_args)
     expect_error(augment_tbl(graduates, con,
-                             with_info = "affiliation", on_col = "authorid"))
+                             with_info = "affiliation", on_col = "authorid"),
+                 regexp = error_nonvalid_args)
   })
 
-  test_that("we get the right columns ", {
+  test_that("augment_tbl() gives the right columns ", {
     expect_equal(names(graduates_affil),
                  c("AuthorId", "goid", "link_score", "AffiliationId", "Year"))
     expect_equal(names(graduates_output),

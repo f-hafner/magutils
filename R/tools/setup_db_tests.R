@@ -102,6 +102,23 @@ purrr::map(files,
              filename = .x
            ))
 
+## get_proquest: advisors
+capture_mockdb(production_db = db_file,
+               f = get_proquest(conn = conn,
+                                from = "advisors",
+                                lazy = FALSE,
+                                limit = 3)
+)
+
+# Note: some of these here are now deleted and do not exist anymore.. need to clean up!
+files <- c("SELECT-124fb3", "SELECT_-a24ff2")
+
+purrr::map(files,
+           .f = ~copy_fixture(
+             origin = mock_origin,
+             filename = .x
+           ))
+
 ## define_field
 capture_mockdb(production_db = db_file,
                f = dplyr::tbl(conn, "Authors") %>%
@@ -156,4 +173,7 @@ purrr::map(files,
              filename = .x
            ))
 
+
+DBI::dbDisconnect(conn)
+DBI::dbDisconnect(con)
 

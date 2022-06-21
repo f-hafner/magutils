@@ -8,7 +8,7 @@ with_mock_db({
                  limit = 1,
                  lazy = FALSE)
 
-  test_that("we get the right columns from graduate fields", {
+  test_that("define_field() gives the right columns from graduate fields", {
     expect_equal(names(d), c("AuthorId", "fieldname0_mag"))
   })
 

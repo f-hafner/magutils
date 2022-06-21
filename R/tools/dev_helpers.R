@@ -1,5 +1,5 @@
 
-# Some helpers for development
+# Some helpers for development and testing with dittodb
 
 
 #' Capture a function call to a production database in mock fixtures.
@@ -14,8 +14,6 @@
 #' defined by dittodb
 #' based on name of `production_db`. For instance, "/mypath/database.sqlite"
 #' becomes "_mypath_database.sqlite/".
-#'
-#' @export
 capture_mockdb <- function(production_db,
                            mock_db = "./tests/testthat/mock_db/", f) {
   dittodb::start_db_capturing(mock_db)
@@ -41,7 +39,6 @@ capture_mockdb <- function(production_db,
 #' See the dittodb documentation for details.
 #'
 #' @return Copies the fixture from `mock_db/origin/` to `mock_db/`.
-#' @export
 copy_fixture <- function(mock_db = "./tests/testthat/mock_db/", origin,
                          filename, verbose = FALSE) {
   if (verbose) {

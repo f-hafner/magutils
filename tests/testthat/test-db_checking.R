@@ -13,8 +13,10 @@ sql2 <- "CREATE INDEX idx1 ON mytable (col1, col2))"
 test_that("get_idx_cols() works", {
   expect_equal(get_idx_cols(sql1), c("col1", "col2"))
   expect_equal(get_idx_cols(sql2), c("col1", "col2"))
-  expect_error(get_idx_cols("CREATE ON mytable"))
-  expect_error(get_idx(cols("CREATE UNIQUE INDEX idx1 ON mytable ()")))
+  expect_error(get_idx_cols("CREATE ON mytable"),
+               regexp = "This statement does not seem to create an index")
+  expect_error(get_idx_cols("CREATE UNIQUE INDEX idx1 ON mytable ()"),
+               regexp = "Could not extract any columns.")
 })
 
 
@@ -50,7 +52,7 @@ test_that("has_idx() works", {
                        on_cols = "a", keep_unique = TRUE))
 })
 
-test_that("get_tbl_idx works", {
+test_that("get_tbl_idx() works", {
   expected_list <- list(
     idx1 = list(
       idx_unique = TRUE,

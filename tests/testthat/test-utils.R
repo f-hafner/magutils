@@ -1,5 +1,5 @@
 
-test_that("valid_sql_limit is non-negative integer or infinite", {
+test_that("valid_sql_limit() is non-negative integer or infinite", {
   expect_true(valid_sql_limit(3))
   expect_true(valid_sql_limit(Inf))
   expect_false(valid_sql_limit(-1))
@@ -15,7 +15,7 @@ test_that("valid_sql_limit is non-negative integer or infinite", {
 with_mock_db({
   con <- DBI::dbConnect(RSQLite::SQLite(), "mock_db")
 
-  test_that("we get a dataframe with the right nrow", {
+  test_that("make_tbl_output() gives a dataframe with the right nrow", {
     d_df <- make_tbl_output(dplyr::tbl(con, "current_links"),
                             limit = 2,
                             lazy = FALSE)
@@ -23,7 +23,7 @@ with_mock_db({
     expect_equal(nrow(d_df), 2)
   })
 
-  test_that("we get a lazily evaluated table", {
+  test_that("make_tbl_output() gives a lazily evaluated table", {
     d_lazy <- make_tbl_output(dplyr::tbl(con, "current_links"),
                               limit = 2,
                               lazy = TRUE)
@@ -33,10 +33,15 @@ with_mock_db({
 
 })
 
-test_that("dots_tbl_output works properly", {
-  expect_error(dots_tbl_output(lazy = FALSE))
+test_that("dots_tbl_output() works ", {
+  expect_error(dots_tbl_output(lazy = FALSE),
+               regexp = "You specified `lazy = FALSE` but did not give a `limit`.")
   expect_equal(dots_tbl_output(lazy = FALSE, limit = 5),
                list(lazy = FALSE, limit = 5))
   expect_equal(dots_tbl_output(limit = 5),
                list(limit = 5, lazy = TRUE)) # here, the order is reversed
+  expect_equal(dots_tbl_output(blah = 3),
+               list(blah = 3,
+                    lazy = TRUE,
+                    limit = Inf))
 })

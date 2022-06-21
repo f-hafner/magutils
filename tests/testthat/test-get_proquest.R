@@ -1,7 +1,7 @@
 with_mock_db({
   con <- DBI::dbConnect(RSQLite::SQLite(), "mock_db")
 
-  test_that("we get right columns for proquest authors", {
+  test_that("get_proquest() gives the right columns for graduates", {
     d <- get_proquest(conn = con,
                       from = "graduates",
                       lazy = FALSE,
@@ -11,9 +11,23 @@ with_mock_db({
                              "gender"))
   })
 
-  test_that("we cannot pass non-numerics", {
-    expect_error(authors_proquest(conn = con, limit = 3, start_year = "a"))
-    expect_error(authors_proquest(conn = con, limit = 3, end_year = "b"))
+  test_that("get_proquest() gives the right columns for advisors", {
+    d <- get_proquest(conn = con,
+                      from = "advisors",
+                      lazy = FALSE,
+                      limit = 3)
+    expect_equal(names(d),
+                 c("goid", "position", "relationship_id", "gender"))
+  })
+
+  test_that("get_proquest() does not accept
+              non-numerics for start_year and end_year", {
+    expect_error(get_proquest(conn = con, from = "advisors", limit = 3, start_year = "a"),
+                 regexp = "Invalid arguments.")
+    expect_error(get_proquest(conn = con, from = "advisors", limit = 3, end_year = "b"),
+                 regexp = "Invalid arguments.")
+    expect_error(get_proquest(conn = con, from = "advisors", limit = 3, end_year = TRUE),
+                 regexp = "Invalid arguments.")
   })
 
 })

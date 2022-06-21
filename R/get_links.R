@@ -35,10 +35,14 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
     )
   )
 
-  stopifnot(is.double(min_score)
-            & min_score >= 0
-            & min_score <= 1)
-  stopifnot(from %in% names(tbl_info))
+  right_score <- (is.double(min_score)
+                  & min_score >= 0
+                  & min_score <= 1)
+  right_info <- from %in% names(tbl_info)
+  if (!right_score | ! right_info) {
+    stop("Invalid arguments.")
+  }
+
   from_tbl <- tbl_info[[from]][["tbl_name"]]
   pq_id <- tbl_info[[from]][["pq_id"]]
 

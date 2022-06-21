@@ -31,8 +31,11 @@
 #' @importFrom magrittr %>%
 get_proquest <- function(conn, from, start_year = 1985, end_year = 2005, ...) {
 
-  stopifnot(is.double(start_year) && is.double(end_year))
-  stopifnot(from %in% c("graduates", "advisors"))
+  correct_args <- (is.double(start_year) && is.double(end_year)
+                     & from %in% c("graduates", "advisors"))
+  if (!correct_args) {
+    stop("Invalid arguments.")
+  }
 
   query_keep_us <- "
     SELECT university_id

@@ -44,10 +44,14 @@
 augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId", ...) {
 
   tbl_classes <- attributes(tbl)$class
-  stopifnot("tbl_lazy" %in% tbl_classes
-            & "tbl_sql" %in%  tbl_classes)
-  stopifnot(on_col %in% c("AuthorId", "CoAuthorId"))
-  stopifnot(with_info %in% c("affiliation", "output", "coauthor"))
+
+  right_classes <- "tbl_lazy" %in% tbl_classes & "tbl_sql" %in%  tbl_classes
+  right_cols <- on_col %in% c("AuthorId", "CoAuthorId")
+  right_with <- with_info %in% c("affiliation", "output", "coauthor")
+
+  if (!right_classes | !right_cols | !right_with) {
+    stop("Non-valid arguments.")
+  }
 
   if ("coauthor" %in% with_info
       & ("affiliation" %in% with_info
