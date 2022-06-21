@@ -127,15 +127,8 @@ We can query information from the database schema with some custom functions.
 
 We can use the following query to see the specific contents of each table: 
 
-*TODO: use the simple function here when written*
-
 ```{r}
-res <- DBI::dbSendQuery(
-  conn = conn,
-  statement = "select sql from sqlite_master where tbl_name = 'current_links' and type = 'table' "
-)
-DBI::dbFetch(res)
-DBI::dbClearResult(res)
+sqlite_master_to_df(conn = conn)
 ```
 
 ## Using the package

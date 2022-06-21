@@ -27,11 +27,13 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
   tbl_info <- list(
     graduates = list(
       tbl_name = "current_links",
-      pq_id = "goid"
+      pq_id = "goid",
+      unique_idx = c("goid")
     ),
     advisors = list(
       tbl_name = "current_links_advisors",
-      pq_id = "relationship_id"
+      pq_id = "relationship_id",
+      unique_idx = c("relationship_id")
     )
   )
 
@@ -45,6 +47,7 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
 
   from_tbl <- tbl_info[[from]][["tbl_name"]]
   pq_id <- tbl_info[[from]][["pq_id"]]
+  unique_idx_cols <- tbl_info[[from]][["unique_idx"]]
 
   if (from == "advisors" & min_score < 0.95) {
     message(strwrap(
@@ -53,6 +56,19 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
       linked records you use.",
       prefix = " ", initial = "")
     )
+  }
+
+  has_unique_index <- has_idx(conn = conn, tbl = from_tbl,
+                              on_cols = unique_idx_cols,
+                              keep_unique = T)
+  if (!has_unique_index) {
+    stop(strwrap(
+      paste0("Expected table ", from_tbl, " to have unique index on (",
+             paste(unique_idx_cols, collapse = ","),
+             "), but this is not true. This check is to ensure that entites ",
+             "are not linked more than once."),
+      prefix = " ", initial = ""
+    ))
   }
 
   query_links <- paste0("

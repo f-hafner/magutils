@@ -106,11 +106,6 @@ has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
 }
 
-
-## Helpers for main functions
-#-----------------------------
-#-----------------------------
-
 #' Transform sqlite_master table to a dataframe.
 #'
 #' @inheritParams doc_sqlite_connection
@@ -129,14 +124,16 @@ sqlite_master_to_df <- function(conn, temp = FALSE) {
   if (temp) src_tbl <- "sqlite_temp_master"
   res <- DBI::dbSendQuery(
     conn = conn,
-    statement = paste0("select type, name, tbl_name, sql from ", src_tbl)
+    statement = paste0("SELECT type, name, tbl_name, sql FROM ", src_tbl)
   )
   df <- DBI::dbFetch(res) # returns a df with the relevant information
   DBI::dbClearResult(res)
   return(df)
 }
 
-
+## Helpers for main functions
+#-----------------------------
+#-----------------------------
 
 #' Remove redundant white spaces and new lines
 #'

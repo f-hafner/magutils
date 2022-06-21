@@ -62,10 +62,14 @@ RSQLite::dbWriteTable(conn = example_con,
                       value = current_links,
                       overwrite = TRUE)
 
-send_db_stmt(conn = example_con,
-             stmt =  "CREATE UNIQUE INDEX idx_cl_Authorgoid ON
-                            current_links (AuthorId ASC, goid ASC)"
-             )
+idx_cl <- c(
+  "CREATE UNIQUE INDEX idx_t_AuthorIdgoid ON
+                            current_links (AuthorId ASC, goid ASC)",
+  "CREATE UNIQUE INDEX idx_t_goid ON current_links (goid ASC)"
+)
+
+purrr::map(idx_cl,
+           .f = ~send_db_stmt(conn = example_con, stmt = .x))
 
 ## 1. b) current_links_advisors
 qry <- paste0("SELECT * FROM current_links_advisors WHERE AuthorId IN (",
@@ -82,7 +86,7 @@ RSQLite::dbWriteTable(conn = example_con,
 idx_cla <- c(
   "CREATE UNIQUE INDEX idx_cla_AuthorIdrelid
     ON current_links_advisors (AuthorId ASC, relationship_id ASC)",
-  "CREATE INDEX idx_cla_relid on current_links_advisors (relationship_id ASC)"
+  "CREATE UNIQUE INDEX idx_cla_relid on current_links_advisors (relationship_id ASC)"
 )
 
 purrr::map(idx_cla,

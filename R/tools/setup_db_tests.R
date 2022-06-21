@@ -57,7 +57,7 @@ capture_mockdb(production_db = db_file,
                              limit = 1,
                              lazy = FALSE)
                )
-files <- c("SELECT-db1387")
+files <- c("SELECT-db1387", "SELECT-1aa0ce")
 purrr::map(files,
            .f = ~copy_fixture(
              origin = mock_origin,
@@ -72,7 +72,7 @@ capture_mockdb(production_db = db_file,
                              limit = 1,
                              lazy = FALSE)
 )
-files <- c("SELECT-d9b68f", "SELECT-fb0ad9", "SELECT-b5445f")
+files <- c("SELECT-d9b68f", "SELECT-fb0ad9", "SELECT-b5445f", "SELECT-1aa0ce")
 purrr::map(files,
            .f = ~copy_fixture(
              origin = mock_origin,
