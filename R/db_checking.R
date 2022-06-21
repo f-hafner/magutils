@@ -3,8 +3,9 @@
 
 # Possible use cases
   # 1. does a table have a (unique) index on some columns? (implemented)
-  # 2. list all indexes that are formed on that column (not implented)
-  # 3. which columns does index x cover? (not implemented)
+  # 2. list all indexes and their constituting columns on a given table
+  # 3. list all indexes that are formed on that column (not implented)
+  # 4. which columns does index x cover? (not implemented)
 
 
 ## Main functions for export
@@ -41,14 +42,17 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
                                      )
     )
 
-
-  out <- apply(df, 1, function(x) {
-    out <- list(
-      idx_unique = as.logical(x[["idx_unique"]]),
-      idx_cols = get_idx_cols(x[["sql"]])
-    )
-  })
-
+  tryCatch(
+    error = function(cnd) {
+      stop("Can't find any information for table ", tbl, ". Is it in the database?")
+    },
+    out <- apply(df, 1, function(x) {
+      out <- list(
+        idx_unique = as.logical(x[["idx_unique"]]),
+        idx_cols = get_idx_cols(x[["sql"]])
+      )
+    })
+  )
   names(out) <- df$name
 
   return(out)

@@ -1,6 +1,10 @@
 
 # Prepare the sqlite database used in the examples.
 
+# NOTE: to copy the indexes from the production db to the example and
+# mockdb, can use: sqlite_master_to_df(production_db) %>% dplyr::filter(tbl_name == "x" & type == "index")
+# and then apply over the sql column to create the index
+
 # Setup
 
 library(devtools)
