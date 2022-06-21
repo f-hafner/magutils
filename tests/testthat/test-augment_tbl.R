@@ -22,7 +22,8 @@ with_mock_db({
   test_that("we get an error when passing wrong options ", {
     expect_error(augment_tbl(graduates, con, with_info = "affil"))
     expect_error(augment_tbl(graduates, con))
-    expect_error(augment_tbl(graduates, con, with_info = "affiliation", on_col = "authorid"))
+    expect_error(augment_tbl(graduates, con,
+                             with_info = "affiliation", on_col = "authorid"))
   })
 
   test_that("we get the right columns ", {

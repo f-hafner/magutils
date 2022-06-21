@@ -57,7 +57,7 @@ Tables with links between records in MAG and ProQuest. They are created outside 
 
 
 - AuthorId: The author identifier in MAG.
-- link_score: The probability $\in [0, 1]$ that the linked entities are truely the same. Calculated from the linking algorithm not part of the package.
+- link_score: The probability $\in [0, 1]$ that the linked entities are truly the same. Calculated from the linking algorithm not part of the package.
 - iteration_id: The iteration identifer of the linking algorithm; not relevant for this package.
 
 The identifier in ProQuest differs:

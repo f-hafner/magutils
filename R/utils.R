@@ -30,16 +30,17 @@ connect_to_db <- function(db_file) {
 #' Define gender based on first name.
 #'
 #' @param tbl A lazily evaluated table sourced from `conn`.
-#' @param conn An object of the DBIConnection class.
+#' @inheritParams doc_sqlite_connection
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
 #' Clear assignment is when probability of either gender is 0.8 or higher.
-#' @param firstname_left Column containing the firstname in `table` and to be used for joining gender on.
+#' @param firstname_left Column containing the firstname in `table` and to
+#' be used for joining gender on.
 #'
 #' @return `table` augmented by a gender column.
 #'
 #' @details Note that  `firstname_left` should be free of middle names and middle
-#' initials, as otherwise the gender assignment fails (even though using only the
-#' firstname would result in a high-confidence assignment.)
+#' initials, as otherwise the gender assignment fails (even though using only
+#' the firstname would result in a high-confidence assignment.)
 #'
 #' @export
 #'
@@ -128,7 +129,8 @@ make_tbl_output <- function(tbl, limit, lazy) {
 #'
 #' @param ... Ellipsis, passed on from a higher function
 #'
-#' @return A named list built from `...`, with defaults for `make_tbl_output` added:
+#' @return A named list built from `...`, with defaults for `make_tbl_output`
+#' added:
 #' `lazy` is by default `TRUE`, `limit` is by default `Inf`. Thus, if you only
 #' pass on limit = 3, you get a lazily evaluated query.
 #' To safeguard against accidentally loading large queries into memory
@@ -142,7 +144,12 @@ dots_tbl_output <- function(...) {
     }
     if (! "limit" %in% names(dots)) {
       if (!dots$lazy) {
-        stop("You specified `lazy = FALSE` but did not give a `limit`. If you want to load the query into memory, run the function without specifying neither of `limit` and `lazy` and explicitly `collect` afterwards.")
+        stop(strwrap(
+          "You specified `lazy = FALSE` but did not give a `limit`. If you want
+          to load the query into memory, run the function without specifying
+          neither of `limit` and `lazy` and explicitly `collect` afterwards.",
+          prefix = " ", initial = ""
+        ))
       }
       dots$limit = Inf
     }

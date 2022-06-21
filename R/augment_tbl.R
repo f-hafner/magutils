@@ -3,7 +3,7 @@
 #' Augment a table with additional columns.
 #'
 #' @param tbl A lazily evaluated table from dbplyr.
-#' @param conn An object of the DBIConnection class to a database.
+#' @inheritParams doc_sqlite_connection
 #' @param with_info Which info should `tbl` be augmented with?
 #' A column vector with the following options, specified as strings:
 #' - affiliation: joins information on unit-year for units in `on_col`
@@ -15,7 +15,8 @@
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
+#' Partially specified arguments are completed with
+#' \code{\link{dots_tbl_output}}.
 #'
 #' @return A new `tbl` with the columns specified `with_info` added.
 #'
@@ -34,11 +35,11 @@
 #'
 #' @export
 #'
-#' @examples 
+#' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-#' graduates <- get_links(conn, from = "graduates") 
+#' graduates <- get_links(conn, from = "graduates")
 #' graduates <- augment_tbl(graduates, conn, with_info = "output")
-#' 
+#'
 #' @importFrom magrittr %>%
 augment_tbl <- function(tbl, conn, with_info, on_col = "AuthorId", ...) {
 

@@ -11,7 +11,7 @@ tidy_string(s)
 }
 \value{
 The string, with new lines and excess white spaces removed.
-Excess white spaces refer to both trailining and leading as well as
+Excess white spaces refer to both trailing and leading as well as
 multiple white spaces next to each other.
 }
 \description{

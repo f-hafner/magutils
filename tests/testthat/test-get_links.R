@@ -29,7 +29,8 @@ with_mock_db({
   })
 
   test_that("we get the right column from linked advisors", {
-    expect_equal(names(advisors), c("AuthorId", "relationship_id", "link_score"))
+    expect_equal(names(advisors),
+                 c("AuthorId", "relationship_id", "link_score"))
   })
 
   test_that("we get a lazily evaluated table", {

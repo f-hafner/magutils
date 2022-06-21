@@ -10,7 +10,8 @@ dots_tbl_output(...)
 \item{...}{Ellipsis, passed on from a higher function}
 }
 \value{
-A named list built from \code{...}, with defaults for \code{make_tbl_output} added:
+A named list built from \code{...}, with defaults for \code{make_tbl_output}
+added:
 \code{lazy} is by default \code{TRUE}, \code{limit} is by default \code{Inf}. Thus, if you only
 pass on limit = 3, you get a lazily evaluated query.
 To safeguard against accidentally loading large queries into memory

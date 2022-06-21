@@ -9,14 +9,15 @@ define_field(tbl, conn, from, ...)
 \arguments{
 \item{tbl}{A tbl on which to add the field of study.}
 
-\item{conn}{An object of the DBIConnection class.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
 \item{from}{A string with options to be queried: "mag_authors" or "graduates".}
 
 \item{...}{additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
-Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
+Partially specified arguments are completed with
+\code{\link{dots_tbl_output}}.}
 }
 \value{
 A table with one field name for each person id.

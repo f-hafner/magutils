@@ -9,9 +9,10 @@ define_gender(tbl, conn, firstname_left, drop_missing)
 \arguments{
 \item{tbl}{A lazily evaluated table sourced from \code{conn}.}
 
-\item{conn}{An object of the DBIConnection class.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
-\item{firstname_left}{Column containing the firstname in \code{table} and to be used for joining gender on.}
+\item{firstname_left}{Column containing the firstname in \code{table} and to
+be used for joining gender on.}
 
 \item{drop_missing}{If TRUE, drops records without clear gender assigned.
 Clear assignment is when probability of either gender is 0.8 or higher.}
@@ -24,8 +25,8 @@ Define gender based on first name.
 }
 \details{
 Note that  \code{firstname_left} should be free of middle names and middle
-initials, as otherwise the gender assignment fails (even though using only the
-firstname would result in a high-confidence assignment.)
+initials, as otherwise the gender assignment fails (even though using only
+the firstname would result in a high-confidence assignment.)
 }
 \examples{
 \dontrun{

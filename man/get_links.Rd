@@ -7,7 +7,7 @@
 get_links(conn, from, min_score = 0.7, ...)
 }
 \arguments{
-\item{conn}{An object of the DBIConnection class to a database.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
 \item{from}{The table with the links to be used.
 Must be "advisors" or "graduates"}
@@ -17,7 +17,8 @@ Must be "advisors" or "graduates"}
 \item{...}{additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
-Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
+Partially specified arguments are completed with
+\code{\link{dots_tbl_output}}.}
 }
 \value{
 A query of linked goid-AuthorId.

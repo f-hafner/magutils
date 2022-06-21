@@ -9,13 +9,15 @@ capture_mockdb(production_db, mock_db = "./tests/testthat/mock_db/", f)
 \arguments{
 \item{production_db}{The production database with the full data}
 
-\item{mock_db}{The path to the mock database containing the fixtures for dittodb.
-Default is \verb{tests/testthat/mock_db/}}
+\item{mock_db}{The path to the mock database containing the fixtures for
+dittodb. Default is \verb{tests/testthat/mock_db/}.}
 
-\item{f}{The function with SQL calls to be captured with all options set inside.}
+\item{f}{The function with SQL calls to be captured with all options
+set inside.}
 }
 \value{
-Saves fixtures to \verb{mock_db/dir/} where \code{dir} is created and defined by dittodb
+Saves fixtures to \verb{mock_db/dir/} where \code{dir} is created and
+defined by dittodb
 based on name of \code{production_db}. For instance, "/mypath/database.sqlite"
 becomes "_mypath_database.sqlite/".
 }

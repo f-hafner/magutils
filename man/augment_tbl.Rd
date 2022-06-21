@@ -9,7 +9,7 @@ augment_tbl(tbl, conn, with_info, on_col = "AuthorId", ...)
 \arguments{
 \item{tbl}{A lazily evaluated table from dbplyr.}
 
-\item{conn}{An object of the DBIConnection class to a database.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
 \item{with_info}{Which info should \code{tbl} be augmented with?
 A column vector with the following options, specified as strings:
@@ -26,7 +26,8 @@ join information on co-authors (see below for details).}
 \item{...}{additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
-Partially specified arguments are completed with \code{\link{dots_tbl_output}}.}
+Partially specified arguments are completed with
+\code{\link{dots_tbl_output}}.}
 }
 \value{
 A new \code{tbl} with the columns specified \code{with_info} added.
@@ -51,7 +52,7 @@ Mixing the purposes is discouraged because it creates duplicated records.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-graduates <- get_links(conn, from = "graduates") 
+graduates <- get_links(conn, from = "graduates")
 graduates <- augment_tbl(graduates, conn, with_info = "output")
 
 }

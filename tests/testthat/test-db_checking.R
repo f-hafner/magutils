@@ -8,7 +8,7 @@ test_that("tidy_string() works", {
 
 
 sql1 <- "CREATE INDEX idx1 ON mytable (col1 ASC, col2 ASC)"
-sql2 <- "CREATE INDEX idx1 ON mytable (col1, col2))" # should this throw a warning? -- it is from the db, so how much can be wrong here
+sql2 <- "CREATE INDEX idx1 ON mytable (col1, col2))"
 
 test_that("get_idx_cols() works", {
   expect_equal(get_idx_cols(sql1), c("col1", "col2"))

@@ -12,14 +12,17 @@ copy_fixture(
 )
 }
 \arguments{
-\item{mock_db}{The path to the mock database containing the fixtures for dittodb.}
+\item{mock_db}{The path to the mock database containing the fixtures for
+dittodb. Default is \verb{tests/testthat/mock_db/}.}
 
-\item{origin}{The origin directory where dittodb saved the fixutres from capturing}
+\item{origin}{The origin directory where dittodb saved the fixtures
+from capturing}
 
 \item{filename}{The name of the file to be copied.}
 
 \item{verbose}{Logical. Should filenames be printed?
-The filename consist of the first SQL verb of the query (often "SELECT") and the
+The filename consist of the first SQL verb of the query
+(often "SELECT") and the
 hash of the query that is sent.
 See the dittodb documentation for details.}
 }

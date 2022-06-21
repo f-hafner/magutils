@@ -1,13 +1,14 @@
 #' Source ProQuest data on advisors or graduates.
 #'
-#' @param conn An object of the DBIConnection class.
+#' @inheritParams doc_sqlite_connection
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
+#' Partially specified arguments are completed with
+#' \code{\link{dots_tbl_output}}.
 #'
 #' @details
 #' For simplicity, does not return the degree year and university information to
@@ -92,7 +93,6 @@ get_proquest <- function(conn, from, start_year = 1985, end_year = 2005, ...) {
 }
 
 
-# re-run queries for generating mock dbs and re-test
 
 
 

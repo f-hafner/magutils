@@ -22,7 +22,9 @@ Suggests:
     dittodb,
     knitr,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0),
     tidyr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Language: en-US

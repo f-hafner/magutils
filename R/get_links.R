@@ -2,14 +2,15 @@
 
 #' Load links between MAG and ProQuest
 #'
-#' @param conn An object of the DBIConnection class to a database.
+#' @inheritParams doc_sqlite_connection
 #' @param from The table with the links to be used.
 #' Must be "advisors" or "graduates"
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
+#' Partially specified arguments are completed with
+#' \code{\link{dots_tbl_output}}.
 #'
 #' @return A query of linked goid-AuthorId.
 #' @export
@@ -44,7 +45,7 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
   if (from == "advisors" & min_score < 0.95) {
     message(strwrap(
       "Note: At the moment, using a link score below 0.95 for advisors
-      can result in suspiciously many fals positives. Carefully inspect the
+      can result in suspiciously many false positives. Carefully inspect the
       linked records you use.",
       prefix = " ", initial = "")
     )

@@ -4,7 +4,7 @@
 # Possible use cases
   # 1. does a table have a (unique) index on some columns? (implemented)
   # 2. list all indexes and their constituting columns on a given table
-  # 3. list all indexes that are formed on that column (not implented)
+  # 3. list all indexes that are formed on that column (not implemented)
   # 4. which columns does index x cover? (not implemented)
 
 
@@ -15,11 +15,11 @@
 
 #' Extract the table indexes from a table
 #'
-#' @param conn A DBI connection to a sqlite database.
+#' @inheritParams doc_sqlite_connection
 #' @param tbl The name of the table.
-#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
-#' Default is FALSE. This can be useful when looking for temporary tables and
-#' indexes on them.
+#' @param temp Should `sqlite_temp_master` be queried, instead of
+#' `sqlite_master`? Default is FALSE. This can be useful when looking for
+#' temporary tables and indexes on them.
 #'
 #' @return A named list of lists. Each list corresponds to one index on `tbl`.
 #' A elements (top-level) of the list are named according to the name of the
@@ -32,6 +32,8 @@
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' get_tbl_idx(conn, "author_output")
+#' @importFrom rlang .data
+#' @importFrom magrittr %>%
 get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
   df <- sqlite_master_to_df(conn, temp = temp) %>%
@@ -44,7 +46,8 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
   tryCatch(
     error = function(cnd) {
-      stop("Can't find any information for table ", tbl, ". Is it in the database?")
+      stop("Can't find any information for table ", tbl,
+           ". Is it in the database?")
     },
     out <- apply(df, 1, function(x) {
       out <- list(
@@ -64,14 +67,12 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
 #' Check if a table has an index on some columns
 #'
-#' @param conn A DBI connection to a sqlite database.
+#' @inheritParams doc_sqlite_connection
 #' @param tbl A table in the database.
 #' @param on_cols A character vector with the columns to check.
 #' @param keep_unique A logical. Additionally check if the index has the
 #' UNIQUE constraint. Default is FALSE.
-#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
-#' Default is FALSE. This can be useful when looking for temporary tables and
-#' indexes on them.
+#' @inheritParams get_tbl_idx
 #'
 #' @return A logical.
 #' @details The function only checks *exact* matching of `on_cols`, that is, the
@@ -112,11 +113,9 @@ has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
 #' Transform sqlite_master table to a dataframe.
 #'
-#' @param conn An object of the DBIConnection class.
-#' @param temp Should `sqlite_temp_master` be queried, instead of `sqlite_master`?
-#' Default is FALSE. This can be useful when looking for temporary tables and
-#' indexes on them.
-#'
+#' @inheritParams doc_sqlite_connection
+#' @inheritParams get_tbl_idx
+
 #' @return A dataframe with type, name, tbl_name and sql statement
 #' from sqlite_master.
 #' @export
@@ -144,7 +143,7 @@ sqlite_master_to_df <- function(conn, temp = FALSE) {
 #' @param s A string.
 #'
 #' @return The string, with new lines and excess white spaces removed.
-#' Excess white spaces refer to both trailining and leading as well as
+#' Excess white spaces refer to both trailing and leading as well as
 #' multiple white spaces next to each other.
 #'
 #' @examples magutils:::tidy_string("  some string     with  many   white spaces. ")

@@ -7,7 +7,7 @@
 has_idx(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE)
 }
 \arguments{
-\item{conn}{A DBI connection to a sqlite database.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
 \item{tbl}{A table in the database.}
 
@@ -16,9 +16,9 @@ has_idx(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE)
 \item{keep_unique}{A logical. Additionally check if the index has the
 UNIQUE constraint. Default is FALSE.}
 
-\item{temp}{Should \code{sqlite_temp_master} be queried, instead of \code{sqlite_master}?
-Default is FALSE. This can be useful when looking for temporary tables and
-indexes on them.}
+\item{temp}{Should \code{sqlite_temp_master} be queried, instead of
+\code{sqlite_master}? Default is FALSE. This can be useful when looking for
+temporary tables and indexes on them.}
 }
 \value{
 A logical.

@@ -7,11 +7,11 @@
 sqlite_master_to_df(conn, temp = FALSE)
 }
 \arguments{
-\item{conn}{An object of the DBIConnection class.}
+\item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
-\item{temp}{Should \code{sqlite_temp_master} be queried, instead of \code{sqlite_master}?
-Default is FALSE. This can be useful when looking for temporary tables and
-indexes on them.}
+\item{temp}{Should \code{sqlite_temp_master} be queried, instead of
+\code{sqlite_master}? Default is FALSE. This can be useful when looking for
+temporary tables and indexes on them.}
 }
 \value{
 A dataframe with type, name, tbl_name and sql statement

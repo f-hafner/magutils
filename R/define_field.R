@@ -2,12 +2,13 @@
 #' Define the field of study for records in a table.
 #'
 #' @param tbl A tbl on which to add the field of study.
-#' @param conn An object of the DBIConnection class.
+#' @inheritParams doc_sqlite_connection
 #' @param from A string with options to be queried: "mag_authors" or "graduates".
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with \code{\link{dots_tbl_output}}.
+#' Partially specified arguments are completed with
+#' \code{\link{dots_tbl_output}}.
 #'
 #' @return
 #' A table with one field name for each person id.
