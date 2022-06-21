@@ -175,3 +175,10 @@ names_tbl_lazy <- function(tbl) {
 
 
 
+
+
+
+
+
+
+
