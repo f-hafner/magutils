@@ -1,4 +1,3 @@
-
 #' Generate the path to the example database
 #'
 #' Make it easy to access the example database in the package for showing

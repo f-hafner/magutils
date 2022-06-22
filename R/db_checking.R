@@ -1,7 +1,5 @@
-
-# Some helper functions to check indexes on a table and possibly more
-
-# Possible use cases
+# This file contains helper functions to check indexes on a table,
+# and may be extended in the future according to the following use cases:
   # 1. does a table have a (unique) index on some columns? (implemented)
   # 2. list all indexes and their constituting columns on a given table
   # 3. list all indexes that are formed on that column (not implemented)

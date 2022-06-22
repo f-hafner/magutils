@@ -1,5 +1,5 @@
 
-# Some helpers for mocking the database for tests
+# This file contains helpers for mocking the database for tests
 
 
 #' Capture a function call to a production database in mock fixtures.

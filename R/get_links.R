@@ -1,5 +1,3 @@
-
-
 #' Load links between MAG and ProQuest
 #'
 #' Load the links between records in MAG and in ProQuest. The links are

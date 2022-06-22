@@ -1,14 +1,7 @@
+# This files collects various functions. Many of them are internal.
 
-# Define some variables used in functions below
+# Define some parameters used in functions below
 threshold_prob_female <- 0.8
-
-
-geemp_fields <- c("geology", "geography", "environmental science",
-                  "mathematics", "computer science", "engineering",
-                  "chemistry", "physics", "economics")
-lps_fields <- c("biology", "psychology", "sociology", "political science")
-
-
 
 #' Connect to the database
 #'
@@ -200,8 +193,6 @@ names_tbl_lazy <- function(tbl) {
     names()
   return(out)
 }
-
-
 
 
 

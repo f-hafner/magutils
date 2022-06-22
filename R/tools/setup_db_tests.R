@@ -1,8 +1,7 @@
-
-# These are some commands for building the mock database for testing
-  # Aims:
-    # 1. hopefully it will be easier to re-create the mock files again later on
-    # 2. keep track of which files are used for which test
+# This file generates the mock database for tests
+# Aims:
+  # 1. hopefully it will be easier to re-create the mock files again later on
+  # 2. keep track of which files are used for which test
 
 # How does it work? Consider a function `myfunc.`
   # 1. Run tests on the db queries with `myfunc.` They will fail with an error like
