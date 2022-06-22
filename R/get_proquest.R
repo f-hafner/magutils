@@ -1,4 +1,10 @@
-#' Source ProQuest data on advisors or graduates.
+#' Load ProQuest data
+#'
+#' This function loads data on PhD graduates or their advisors
+#' from ProQuest. It is based on metadata from ProQuest,
+#' and automatically adds the likely gender of the person,
+#' using \code{\link{define_gender}}, and for graduates, their
+#' field using \code{\link{define_field}}.
 #'
 #' @inheritParams doc_common_args
 #' @param from A string with options to be queried: "advisors" or "graduates".

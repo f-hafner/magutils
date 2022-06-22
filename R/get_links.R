@@ -2,14 +2,23 @@
 
 #' Load links between MAG and ProQuest
 #'
+#' Load the links between records in MAG and in ProQuest. The links are
+#' stored as a table in the database. The links can be either between
+#' PhD graduates and MAG authors, or PhD advisors and MAG authors.
+#'
 #' @inheritParams doc_common_args
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
-#' @param ... additional arguments to be passed on to
+#' @param ... Additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with
 #' \code{\link{dots_tbl_output}}.
+#'
+#' @details For advisor links, a high threshold for `min_score` (0.95 or higher)
+#' is recommended, and the function throws a message if that is not the case.
+#' The reason for this is that there seem to be many false positives when using
+#' a lower threshold.
 #'
 #' @return A query of linked goid-AuthorId.
 #' @export

@@ -13,7 +13,7 @@ get_links(conn, from, min_score = 0.7, ...)
 
 \item{min_score}{Minimum score for links to accept. Numeric between 0 and 1.}
 
-\item{...}{additional arguments to be passed on to
+\item{...}{Additional arguments to be passed on to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with
@@ -23,7 +23,15 @@ Partially specified arguments are completed with
 A query of linked goid-AuthorId.
 }
 \description{
-Load links between MAG and ProQuest
+Load the links between records in MAG and in ProQuest. The links are
+stored as a table in the database. The links can be either between
+PhD graduates and MAG authors, or PhD advisors and MAG authors.
+}
+\details{
+For advisor links, a high threshold for \code{min_score} (0.95 or higher)
+is recommended, and the function throws a message if that is not the case.
+The reason for this is that there seem to be many false positives when using
+a lower threshold.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))

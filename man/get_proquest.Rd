@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_proquest.R
 \name{get_proquest}
 \alias{get_proquest}
-\title{Source ProQuest data on advisors or graduates.}
+\title{Load ProQuest data}
 \usage{
 get_proquest(conn, from, start_year = 1985, end_year = 2005, ...)
 }
@@ -27,7 +27,11 @@ fieldname and gender.
 For advisors, returns a table with gender and relationship id.
 }
 \description{
-Source ProQuest data on advisors or graduates.
+This function loads data on PhD graduates or their advisors
+from ProQuest. It is based on metadata from ProQuest,
+and automatically adds the likely gender of the person,
+using \code{\link{define_gender}}, and for graduates, their
+field using \code{\link{define_field}}.
 }
 \details{
 For simplicity, does not return the degree year and university information to
