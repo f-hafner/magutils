@@ -15,7 +15,7 @@ get_proquest(conn, from, start_year = 1985, end_year = 2005, ...)
 
 \item{end_year}{Highest graduation year to consider. Default: 2005.}
 
-\item{...}{additional arguments to be passed on to
+\item{...}{Additional arguments to be passed to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with

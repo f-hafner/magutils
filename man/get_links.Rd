@@ -13,7 +13,7 @@ get_links(conn, from, min_score = 0.7, ...)
 
 \item{min_score}{Minimum score for links to accept. Numeric between 0 and 1.}
 
-\item{...}{Additional arguments to be passed on to
+\item{...}{Additional arguments to be passed to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with

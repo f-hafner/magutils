@@ -9,7 +9,7 @@
 #' @inheritParams doc_common_args
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
-#' @param ... Additional arguments to be passed on to
+#' @param ... Additional arguments to be passed to
 #'  \code{\link{make_tbl_output}}.
 #' If not specified, a lazily evaluated table without limit is returned.
 #' Partially specified arguments are completed with
