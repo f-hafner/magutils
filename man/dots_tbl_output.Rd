@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{dots_tbl_output}
 \alias{dots_tbl_output}
-\title{Helper function to handle dots for making table output}
+\title{Handle dots for making table output}
 \usage{
 dots_tbl_output(...)
 }
@@ -10,13 +10,19 @@ dots_tbl_output(...)
 \item{...}{Ellipsis, passed on from a higher function}
 }
 \value{
-A named list built from \code{...}, with defaults for \code{make_tbl_output}
-added:
-\code{lazy} is by default \code{TRUE}, \code{limit} is by default \code{Inf}. Thus, if you only
-pass on limit = 3, you get a lazily evaluated query.
+If \code{...} is empty, returns NULL. Otherwise it converts
+\code{...} into a named list with elements "lazy" and "limit".
+}
+\description{
+This is a helper function to transform ... from user-facing functions
+into arguments for \code{\link{make_tbl_output}}.
+}
+\details{
+For non-empty but partially specified arguments, it adds
+the following defaults: \code{lazy = TRUE}, \code{limit = Inf}.
+For instance, if only limit = 3 is passed, \code{\link{make_tbl_output}}
+will return a lazily evaluated query.
 To safeguard against accidentally loading large queries into memory
 by only specifying \code{lazy = FALSE}, an error is thrown in this case.
 }
-\description{
-Helper function to handle dots for making table output
-}
+\keyword{internal}

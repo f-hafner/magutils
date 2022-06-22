@@ -7,7 +7,7 @@
 augment_tbl(tbl, conn, with_info, on_col = "AuthorId", ...)
 }
 \arguments{
-\item{tbl}{A lazily evaluated table from dbplyr.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
@@ -23,7 +23,7 @@ A column vector with the following options, specified as strings:
 is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 join information on co-authors (see below for details).}
 
-\item{...}{additional arguments to be passed on to
+\item{...}{Additional arguments to be passed to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with
@@ -33,7 +33,9 @@ Partially specified arguments are completed with
 A new \code{tbl} with the columns specified \code{with_info} added.
 }
 \description{
-Augment a table with additional columns.
+This function adds additional data to records in a table: data on
+the affiliation, publication output and co-authors of records in the
+table.
 }
 \details{
 There are two main purposes for which this function can be currently

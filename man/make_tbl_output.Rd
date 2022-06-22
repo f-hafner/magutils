@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{make_tbl_output}
 \alias{make_tbl_output}
-\title{Make final table output from a sql query}
+\title{Make table output from a SQL query}
 \usage{
 make_tbl_output(tbl, limit, lazy)
 }
 \arguments{
-\item{tbl}{A lazily evaluated query from sql with dbplyr.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{limit}{LIMIT of the query. A positive integer or Inf.
 Default is Inf, in which case all records are returned.}
@@ -19,5 +19,8 @@ This is useful if other tables from the database are joined later on.}
 A query, evaluated with \code{limit} and \code{lazy}.
 }
 \description{
-Make final table output from a sql query
+This function is used at the end of user-facing functions to query the
+database. It limits the query to some number of rows and collects if
+if specified.
 }
+\keyword{internal}

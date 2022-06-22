@@ -1,20 +1,15 @@
-
-#' Define the field of study for records in a table.
+#' Define the field of study
 #'
-#' @param tbl A tbl on which to add the field of study.
-#' @inheritParams doc_sqlite_connection
+#' This function defines the field of study at level 0 in MAG of records
+#' in `tbl`. To do so, it queries tables in the database that store the
+#' field of study of the person. See the details for more information.
+#'
+#' @inheritParams doc_common_args
+#' @inheritParams get_links
 #' @param from A string with options to be queried: "mag_authors" or "graduates".
-#' @param ... additional arguments to be passed on to
-#'  \code{\link{make_tbl_output}}.
-#' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with
-#' \code{\link{dots_tbl_output}}.
 #'
-#' @return
-#' A table with one field name for each person id.
-#' The field name is the name of the field at level 0 in MAG.
-#' The person id is `AuthorId` for `from` = "mag_authors" and
-#' `goid` for `from` = "graduates".
+#' @return  `tbl` augmented by a column with the name of the field of study at
+#' level 0 as defined by MAG.
 #'
 #' @details
 #'
@@ -34,7 +29,7 @@
 #' of the likely field of study across all publications in the career.
 #'
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%

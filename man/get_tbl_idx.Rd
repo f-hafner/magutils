@@ -2,31 +2,34 @@
 % Please edit documentation in R/db_checking.R
 \name{get_tbl_idx}
 \alias{get_tbl_idx}
-\title{Extract the table indexes from a table}
+\title{Extract indexes from a table}
 \usage{
-get_tbl_idx(conn, tbl, temp = FALSE)
+get_tbl_idx(conn, on_tbl, temp = FALSE)
 }
 \arguments{
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
-\item{tbl}{The name of the table.}
+\item{on_tbl}{The name of the table.}
 
 \item{temp}{Should \code{sqlite_temp_master} be queried, instead of
 \code{sqlite_master}? Default is FALSE. This can be useful when looking for
 temporary tables and indexes on them.}
 }
 \value{
-A named list of lists. Each list corresponds to one index on \code{tbl}.
+A named list of lists. Each list corresponds to one index on \code{on_tbl}.
 A elements (top-level) of the list are named according to the name of the
 indexes in the database.
 Each element is a list with two entries:
 \itemize{
-\item \code{idx_unique}: A logical indicating whether the index is unique.
+\item \code{idx_unique}: A logical indicating whether the index satisfies the UNIQUE
+constraint as in \verb{CREATE UNIQUE INDEX}.
 \item \code{idx_cols}: A character vector with the index columns.
 }
 }
 \description{
-Extract the table indexes from a table
+Create a list of indexes from a table. The list reports on which columns the
+index exists and whether has the UNIQUE constraint. The function processes
+output from \code{\link{sqlite_master_to_df}}.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))

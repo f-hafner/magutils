@@ -30,5 +30,7 @@ See the dittodb documentation for details.}
 Copies the fixture from \verb{mock_db/origin/} to \verb{mock_db/}.
 }
 \description{
-Copy fixtures to make available for tests
+A wrapper to around \code{\link[base]{dput}} to copy a database fixture
+from \code{origin} to a directory with fixtures used by dittodb.
 }
+\keyword{internal}

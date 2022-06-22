@@ -7,7 +7,7 @@
 define_gender(tbl, conn, firstname_left, drop_missing)
 }
 \arguments{
-\item{tbl}{A lazily evaluated table sourced from \code{conn}.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
@@ -18,13 +18,19 @@ be used for joining gender on.}
 Clear assignment is when probability of either gender is 0.8 or higher.}
 }
 \value{
-\code{table} augmented by a gender column.
+\code{tbl} augmented by a gender column.
 }
 \description{
-Define gender based on first name.
+Given a database table \code{tbl}, assigns the likely gender of the person
+given the firstname. The firstname needs to be present as a column in \code{tbl} and passed
+as argument \code{firstname_left}.
 }
 \details{
-Note that  \code{firstname_left} should be free of middle names and middle
+The function uses the internal table \code{FirstNamesGender}, which
+assigns the likely gender to each first name. The table is generated from
+\href{https://genderize.io/}{genderize.io}.
+
+\code{firstname_left} should be free of middle names and middle
 initials, as otherwise the gender assignment fails (even though using only
 the firstname would result in a high-confidence assignment.)
 }

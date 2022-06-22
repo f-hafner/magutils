@@ -7,11 +7,12 @@
 names_tbl_lazy(tbl)
 }
 \arguments{
-\item{tbl}{A lazily evaluated table from dplyr.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 }
 \value{
 A vector with the names of the dataframe if \code{tbl} was \code{collect}ed.
 }
 \description{
-Extract the names of a lazily evaluated table
+This is a helper function to extract the column names from a table.
 }
+\keyword{internal}

@@ -2,31 +2,31 @@
 % Please edit documentation in R/define_field.R
 \name{define_field}
 \alias{define_field}
-\title{Define the field of study for records in a table.}
+\title{Define the field of study}
 \usage{
 define_field(tbl, conn, from, ...)
 }
 \arguments{
-\item{tbl}{A tbl on which to add the field of study.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
 \item{from}{A string with options to be queried: "mag_authors" or "graduates".}
 
-\item{...}{additional arguments to be passed on to
+\item{...}{Additional arguments to be passed to
 \code{\link{make_tbl_output}}.
 If not specified, a lazily evaluated table without limit is returned.
 Partially specified arguments are completed with
 \code{\link{dots_tbl_output}}.}
 }
 \value{
-A table with one field name for each person id.
-The field name is the name of the field at level 0 in MAG.
-The person id is \code{AuthorId} for \code{from} = "mag_authors" and
-\code{goid} for \code{from} = "graduates".
+\code{tbl} augmented by a column with the name of the field of study at
+level 0 as defined by MAG.
 }
 \description{
-Define the field of study for records in a table.
+This function defines the field of study at level 0 in MAG of records
+in \code{tbl}. To do so, it queries tables in the database that store the
+field of study of the person. See the details for more information.
 }
 \details{
 \subsection{When using \code{from} = "graduates"}{
@@ -48,3 +48,4 @@ publish over their career. The field is defined based on a confidence score
 of the likely field of study across all publications in the career.
 }
 }
+\keyword{internal}

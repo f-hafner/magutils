@@ -1,7 +1,5 @@
-
-# Some helper functions to check indexes on a table and possibly more
-
-# Possible use cases
+# This file contains helper functions to check indexes on a table,
+# and may be extended in the future according to the following use cases:
   # 1. does a table have a (unique) index on some columns? (implemented)
   # 2. list all indexes and their constituting columns on a given table
   # 3. list all indexes that are formed on that column (not implemented)
@@ -13,19 +11,24 @@
 #-----------------------------
 
 
-#' Extract the table indexes from a table
+#' Extract indexes from a table
 #'
-#' @inheritParams doc_sqlite_connection
-#' @param tbl The name of the table.
+#' Create a list of indexes from a table. The list reports on which columns the
+#' index exists and whether has the UNIQUE constraint. The function processes
+#' output from \code{\link{sqlite_master_to_df}}.
+#'
+#' @inheritParams doc_common_args
+#' @param on_tbl The name of the table.
 #' @param temp Should `sqlite_temp_master` be queried, instead of
 #' `sqlite_master`? Default is FALSE. This can be useful when looking for
 #' temporary tables and indexes on them.
 #'
-#' @return A named list of lists. Each list corresponds to one index on `tbl`.
+#' @return A named list of lists. Each list corresponds to one index on `on_tbl`.
 #' A elements (top-level) of the list are named according to the name of the
 #' indexes in the database.
 #' Each element is a list with two entries:
-#' - `idx_unique`: A logical indicating whether the index is unique.
+#' - `idx_unique`: A logical indicating whether the index satisfies the UNIQUE
+#'     constraint as in `CREATE UNIQUE INDEX`.
 #' - `idx_cols`: A character vector with the index columns.
 #'
 #' @export
@@ -34,10 +37,10 @@
 #' get_tbl_idx(conn, "author_output")
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_tbl_idx <- function(conn, tbl, temp = FALSE) {
+get_tbl_idx <- function(conn, on_tbl, temp = FALSE) {
 
   df <- sqlite_master_to_df(conn, temp = temp) %>%
-    dplyr::filter(.data[["tbl_name"]] == tbl & .data[["type"]] == "index") %>%
+    dplyr::filter(.data[["tbl_name"]] == on_tbl & .data[["type"]] == "index") %>%
     dplyr::mutate(sql = tidy_string(.data[["sql"]]),
                   idx_unique = grepl("create unique index",
                                      tolower(.data[["sql"]])
@@ -46,7 +49,7 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
   tryCatch(
     error = function(cnd) {
-      stop("Can't find any information for table ", tbl,
+      stop("Can't find any information for table ", on_tbl,
            ". Is it in the database?")
     },
     out <- apply(df, 1, function(x) {
@@ -63,12 +66,13 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
 
 
-
-
-#' Check if a table has an index on some columns
+#' Check if a table has an index
 #'
-#' @inheritParams doc_sqlite_connection
-#' @param tbl A table in the database.
+#' Check if the table holds an index on the specified columns
+#' and optionally check whether it is unique.
+#'
+#' @inheritParams doc_common_args
+#' @param on_tbl A table in the database.
 #' @param on_cols A character vector with the columns to check.
 #' @param keep_unique A logical. Additionally check if the index has the
 #' UNIQUE constraint. Default is FALSE.
@@ -85,9 +89,9 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' has_idx(conn, "author_output", "AuthorId", keep_unique = TRUE)
-has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
+has_idx <- function(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
-  indexes <- get_tbl_idx(conn, tbl = tbl, temp = temp)
+  indexes <- get_tbl_idx(conn, on_tbl = on_tbl, temp = temp)
   has_index <- sapply(indexes, function(x) {
     identical(x[["idx_cols"]], on_cols)
   })
@@ -108,7 +112,9 @@ has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
 #' Transform sqlite_master table to a dataframe.
 #'
-#' @inheritParams doc_sqlite_connection
+#' This is a wrapper to query sqlite_master from the sqlite database.
+#'
+#' @inheritParams doc_common_args
 #' @inheritParams get_tbl_idx
 
 #' @return A dataframe with type, name, tbl_name and sql statement
@@ -155,12 +161,16 @@ tidy_string <- function(s) {
 
 #' Extract constituting columns from a "create index" statement
 #'
+#' This function takes a string from a SQL statement that creates an index
+#' on a table, and returns the columns that constitute the index.
+#'
 #' @param stmt A SQLite statement to create an index on a table on some columns.
 #' The function extracts the columns on which the index is created. As the
 #' example illustrates, "ASC" and "DESC" statements are removed.
 #'
 #' @return A character vector with the column names defining the index.
 #'
+#' @keywords internal
 #' @examples
 #' magutils:::get_idx_cols("CREATE INDEX idx1 ON mytable (col1 ASC, col2 ASC)")
 #' # gives  c("col1", "col2")

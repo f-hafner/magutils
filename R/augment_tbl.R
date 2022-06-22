@@ -1,9 +1,11 @@
-
-
 #' Augment a table with additional columns.
 #'
-#' @param tbl A lazily evaluated table from dbplyr.
-#' @inheritParams doc_sqlite_connection
+#' This function adds additional data to records in a table: data on
+#' the affiliation, publication output and co-authors of records in the
+#' table.
+#'
+#' @inheritParams doc_common_args
+#' @inheritParams get_links
 #' @param with_info Which info should `tbl` be augmented with?
 #' A column vector with the following options, specified as strings:
 #' - affiliation: joins information on unit-year for units in `on_col`
@@ -12,11 +14,6 @@
 #' @param on_col On which column should the information be joined? The default
 #' is "AuthorId", the unit of authors in MAG. Alternatively, use "CoAuthorId" to
 #' join information on co-authors (see below for details).
-#' @param ... additional arguments to be passed on to
-#'  \code{\link{make_tbl_output}}.
-#' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with
-#' \code{\link{dots_tbl_output}}.
 #'
 #' @return A new `tbl` with the columns specified `with_info` added.
 #'

@@ -22,5 +22,8 @@ based on name of \code{production_db}. For instance, "/mypath/database.sqlite"
 becomes "_mypath_database.sqlite/".
 }
 \description{
-Capture a function call to a production database in mock fixtures.
+This is a wrapper for capturing database fixtures with dittodb.
+It connects to the production database, captures the query, and disconnects
+from the production database.
 }
+\keyword{internal}

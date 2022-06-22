@@ -1,14 +1,16 @@
-#' Source ProQuest data on advisors or graduates.
+#' Load ProQuest data
 #'
-#' @inheritParams doc_sqlite_connection
+#' This function loads data on PhD graduates or their advisors
+#' from ProQuest. It is based on metadata from ProQuest,
+#' and automatically adds the likely gender of the person,
+#' using \code{\link{define_gender}}, and for graduates, their
+#' field using \code{\link{define_field}}.
+#'
+#' @inheritParams doc_common_args
+#' @inheritParams get_links
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.
-#' @param ... additional arguments to be passed on to
-#'  \code{\link{make_tbl_output}}.
-#' If not specified, a lazily evaluated table without limit is returned.
-#' Partially specified arguments are completed with
-#' \code{\link{dots_tbl_output}}.
 #'
 #' @details
 #' For simplicity, does not return the degree year and university information to
