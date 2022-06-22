@@ -128,7 +128,7 @@ We can query information from the database schema with some custom functions.
 We can use the following query to see the specific contents of each table: 
 
 ```{r}
-sqlite_master_to_df(conn = conn)
+dplyr::glimpse(sqlite_master_to_df(conn = conn))
 ```
 
 ## Using the package

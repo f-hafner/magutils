@@ -4,12 +4,12 @@
 \alias{has_idx}
 \title{Check if a table has an index on some columns}
 \usage{
-has_idx(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE)
+has_idx(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE)
 }
 \arguments{
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
-\item{tbl}{A table in the database.}
+\item{on_tbl}{A table in the database.}
 
 \item{on_cols}{A character vector with the columns to check.}
 

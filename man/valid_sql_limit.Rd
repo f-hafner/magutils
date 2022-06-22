@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{valid_sql_limit}
 \alias{valid_sql_limit}
-\title{Check whether input is a non-negative integer or Inf.}
+\title{Check if a scalar is a valid limit for a SQL query}
 \usage{
 valid_sql_limit(x)
 }
@@ -13,8 +13,7 @@ valid_sql_limit(x)
 Logical.
 }
 \description{
-Check whether input is a non-negative integer or Inf.
+Check whether input is a non-negative integer or Inf, which can be
+passed on as \verb{LIMIT x} to SQL.
 }
-\examples{
-valid_sql_limit(3)
-}
+\keyword{internal}

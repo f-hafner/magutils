@@ -10,11 +10,13 @@ connect_to_db(db_file)
 \item{db_file}{full name (including path) of the file.}
 }
 \value{
-Returns an object of the DBIConnection class and prints the db info
-of the connection with \code{dbplyr::src_dbi()}.
+An object of class \code{SQLiteConnection} to a sqlite database.
 }
 \description{
-Connect to the database
+A wrapper around \code{\link[DBI]{dbConnect}} for Sqlite.
+Create an object of class \code{SQLiteConnection} to a sqlite database stored in
+\code{db_file}. Prints the output from \code{\link[dbplyr]{src_dbi}} and returns
+the connection object.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))

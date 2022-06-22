@@ -7,7 +7,7 @@
 define_field(tbl, conn, from, ...)
 }
 \arguments{
-\item{tbl}{A tbl on which to add the field of study.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 

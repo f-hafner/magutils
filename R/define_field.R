@@ -1,8 +1,7 @@
 
 #' Define the field of study for records in a table.
 #'
-#' @param tbl A tbl on which to add the field of study.
-#' @inheritParams doc_sqlite_connection
+#' @inheritParams doc_common_args
 #' @param from A string with options to be queried: "mag_authors" or "graduates".
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.

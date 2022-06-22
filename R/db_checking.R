@@ -15,13 +15,13 @@
 
 #' Extract the table indexes from a table
 #'
-#' @inheritParams doc_sqlite_connection
-#' @param tbl The name of the table.
+#' @inheritParams doc_common_args
+#' @param on_tbl The name of the table.
 #' @param temp Should `sqlite_temp_master` be queried, instead of
 #' `sqlite_master`? Default is FALSE. This can be useful when looking for
 #' temporary tables and indexes on them.
 #'
-#' @return A named list of lists. Each list corresponds to one index on `tbl`.
+#' @return A named list of lists. Each list corresponds to one index on `on_tbl`.
 #' A elements (top-level) of the list are named according to the name of the
 #' indexes in the database.
 #' Each element is a list with two entries:
@@ -34,10 +34,10 @@
 #' get_tbl_idx(conn, "author_output")
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
-get_tbl_idx <- function(conn, tbl, temp = FALSE) {
+get_tbl_idx <- function(conn, on_tbl, temp = FALSE) {
 
   df <- sqlite_master_to_df(conn, temp = temp) %>%
-    dplyr::filter(.data[["tbl_name"]] == tbl & .data[["type"]] == "index") %>%
+    dplyr::filter(.data[["tbl_name"]] == on_tbl & .data[["type"]] == "index") %>%
     dplyr::mutate(sql = tidy_string(.data[["sql"]]),
                   idx_unique = grepl("create unique index",
                                      tolower(.data[["sql"]])
@@ -46,7 +46,7 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
   tryCatch(
     error = function(cnd) {
-      stop("Can't find any information for table ", tbl,
+      stop("Can't find any information for table ", on_tbl,
            ". Is it in the database?")
     },
     out <- apply(df, 1, function(x) {
@@ -67,8 +67,8 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 
 #' Check if a table has an index on some columns
 #'
-#' @inheritParams doc_sqlite_connection
-#' @param tbl A table in the database.
+#' @inheritParams doc_common_args
+#' @param on_tbl A table in the database.
 #' @param on_cols A character vector with the columns to check.
 #' @param keep_unique A logical. Additionally check if the index has the
 #' UNIQUE constraint. Default is FALSE.
@@ -85,9 +85,9 @@ get_tbl_idx <- function(conn, tbl, temp = FALSE) {
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
 #' has_idx(conn, "author_output", "AuthorId", keep_unique = TRUE)
-has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
+has_idx <- function(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
-  indexes <- get_tbl_idx(conn, tbl = tbl, temp = temp)
+  indexes <- get_tbl_idx(conn, on_tbl = on_tbl, temp = temp)
   has_index <- sapply(indexes, function(x) {
     identical(x[["idx_cols"]], on_cols)
   })
@@ -108,7 +108,7 @@ has_idx <- function(conn, tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 
 #' Transform sqlite_master table to a dataframe.
 #'
-#' @inheritParams doc_sqlite_connection
+#' @inheritParams doc_common_args
 #' @inheritParams get_tbl_idx
 
 #' @return A dataframe with type, name, tbl_name and sql statement

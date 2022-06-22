@@ -2,9 +2,8 @@
 
 #' Load links between MAG and ProQuest
 #'
-#' @inheritParams doc_sqlite_connection
-#' @param from The table with the links to be used.
-#' Must be "advisors" or "graduates"
+#' @inheritParams doc_common_args
+#' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param min_score Minimum score for links to accept. Numeric between 0 and 1.
 #' @param ... additional arguments to be passed on to
 #'  \code{\link{make_tbl_output}}.
@@ -58,7 +57,7 @@ get_links <- function(conn, from, min_score = 0.7, ...) {
     )
   }
 
-  has_unique_index <- has_idx(conn = conn, tbl = from_tbl,
+  has_unique_index <- has_idx(conn = conn, on_tbl = from_tbl,
                               on_cols = unique_idx_cols,
                               keep_unique = T)
   if (!has_unique_index) {

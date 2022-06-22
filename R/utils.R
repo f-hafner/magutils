@@ -12,10 +12,14 @@ lps_fields <- c("biology", "psychology", "sociology", "political science")
 
 #' Connect to the database
 #'
+#' A wrapper around \code{\link[DBI]{dbConnect}} for Sqlite.
+#' Create an object of class `SQLiteConnection` to a sqlite database stored in
+#' `db_file`. Prints the output from \code{\link[dbplyr]{src_dbi}} and returns
+#' the connection object.
+#'
 #' @param db_file full name (including path) of the file.
 #'
-#' @return Returns an object of the DBIConnection class and prints the db info
-#' of the connection with `dbplyr::src_dbi()`.
+#' @return An object of class `SQLiteConnection` to a sqlite database.
 #' @export
 #'
 #' @examples conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
@@ -29,16 +33,23 @@ connect_to_db <- function(db_file) {
 
 #' Define gender based on first name.
 #'
-#' @param tbl A lazily evaluated table sourced from `conn`.
-#' @inheritParams doc_sqlite_connection
+#' Given a database table `tbl`, assigns the likely gender of the person
+#' given the firstname. The firstname needs to be present as a column in `tbl` and passed
+#' as argument `firstname_left`.
+#'
+#' @inheritParams doc_common_args
 #' @param drop_missing If TRUE, drops records without clear gender assigned.
 #' Clear assignment is when probability of either gender is 0.8 or higher.
 #' @param firstname_left Column containing the firstname in `table` and to
 #' be used for joining gender on.
 #'
-#' @return `table` augmented by a gender column.
+#' @return `tbl` augmented by a gender column.
 #'
-#' @details Note that  `firstname_left` should be free of middle names and middle
+#' @details The function uses the internal table `FirstNamesGender`, which
+#' assigns the likely gender to each first name. The table is generated from
+#' \href{https://genderize.io/}{genderize.io}.
+#'
+#' `firstname_left` should be free of middle names and middle
 #' initials, as otherwise the gender assignment fails (even though using only
 #' the firstname would result in a high-confidence assignment.)
 #'
@@ -76,14 +87,16 @@ define_gender <- function(tbl, conn, firstname_left, drop_missing) {
 }
 
 
-#' Check whether input is a non-negative integer or Inf.
+#' Check if a scalar is a valid limit for a SQL query
+#'
+#' Check whether input is a non-negative integer or Inf, which can be
+#' passed on as `LIMIT x` to SQL.
 #'
 #' @param x A scalar (numeric or Inf).
 #'
 #' @return Logical.
-#' @export
 #'
-#' @examples valid_sql_limit(3)
+#' @keywords internal
 valid_sql_limit <- function(x) {
   if (length(x) > 1 | is.null(x)) {
     return(FALSE)
@@ -99,16 +112,20 @@ valid_sql_limit <- function(x) {
 
 
 
-#' Make final table output from a sql query
+#' Make table output from a SQL query
 #'
-#' @param tbl A lazily evaluated query from sql with dbplyr.
+#' This function is used at the end of user-facing functions to query the
+#' database. It limits the query to some number of rows and collects if
+#' if specified.
+#'
+#' @inheritParams doc_common_args
 #' @param limit  LIMIT of the query. A positive integer or Inf.
 #' Default is Inf, in which case all records are returned.
 #' @param lazy If TRUE, does not `collect()` the query into a dataframe.
 #' This is useful if other tables from the database are joined later on.
 #'
 #' @return A query, evaluated with `limit` and `lazy`.
-#' @export
+#' @keywords internal
 make_tbl_output <- function(tbl, limit, lazy) {
 
   stopifnot(valid_sql_limit(limit))
@@ -125,17 +142,23 @@ make_tbl_output <- function(tbl, limit, lazy) {
 }
 
 
-#' Helper function to handle dots for making table output
+#' Handle dots for making table output
+#'
+#' This is a helper function to transform ... from user-facing functions
+#' into arguments for \code{\link{make_tbl_output}}.
 #'
 #' @param ... Ellipsis, passed on from a higher function
 #'
-#' @return A named list built from `...`, with defaults for `make_tbl_output`
-#' added:
-#' `lazy` is by default `TRUE`, `limit` is by default `Inf`. Thus, if you only
-#' pass on limit = 3, you get a lazily evaluated query.
+#' @return If `...` is empty, returns NULL. Otherwise it converts
+#'  `...` into a named list with elements "lazy" and "limit".
+#'
+#' @details For non-empty but partially specified arguments, it adds
+#' the following defaults: `lazy = TRUE`, `limit = Inf`.
+#' For instance, if only limit = 3 is passed, \code{\link{make_tbl_output}}
+#' will return a lazily evaluated query.
 #' To safeguard against accidentally loading large queries into memory
 #' by only specifying `lazy = FALSE`, an error is thrown in this case.
-#' @export
+#' @keywords internal
 dots_tbl_output <- function(...) {
   dots <- list(...)
   if (length(dots > 0)) {
@@ -164,11 +187,13 @@ dots_tbl_output <- function(...) {
 
 #' Extract the names of a lazily evaluated table
 #'
-#' @param tbl A lazily evaluated table from dplyr.
+#' This is a helper function to extract the column names from a table.
+#'
+#' @inheritParams doc_common_args
 #'
 #' @return A vector with the names of the dataframe if `tbl` was `collect`ed.
-#' @export
 #' @importFrom magrittr %>%
+#' @keywords internal
 names_tbl_lazy <- function(tbl) {
   out <- make_tbl_output(tbl, limit = 1, lazy = FALSE) %>%
     dplyr::collect() %>%
@@ -178,6 +203,23 @@ names_tbl_lazy <- function(tbl) {
 
 
 
+
+
+#' Collect documentation of commonly used function input
+#'
+#' Store the documentation for arguments commonly used in the package.
+#' The function itself does nothing. It is just for easy reference and
+#' maintenance. In the future more arguments may be added in a similar manner.
+#'
+#' @param conn An object of class `SQLiteConnection` to a sqlite database.
+#' @param tbl A query from `conn` with dbplyr and lazily evaluated.
+#'
+#' @return NULL
+#' @keywords internal
+#'
+doc_common_args <- function(conn, tbl) {
+  NULL
+}
 
 
 

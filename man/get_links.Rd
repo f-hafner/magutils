@@ -9,8 +9,7 @@ get_links(conn, from, min_score = 0.7, ...)
 \arguments{
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 
-\item{from}{The table with the links to be used.
-Must be "advisors" or "graduates"}
+\item{from}{A string with options to be queried: "advisors" or "graduates".}
 
 \item{min_score}{Minimum score for links to accept. Numeric between 0 and 1.}
 

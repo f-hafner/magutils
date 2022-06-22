@@ -7,7 +7,7 @@
 augment_tbl(tbl, conn, with_info, on_col = "AuthorId", ...)
 }
 \arguments{
-\item{tbl}{A lazily evaluated table from dbplyr.}
+\item{tbl}{A query from \code{conn} with dbplyr and lazily evaluated.}
 
 \item{conn}{An object of class \code{SQLiteConnection} to a sqlite database.}
 

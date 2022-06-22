@@ -2,8 +2,7 @@
 
 #' Augment a table with additional columns.
 #'
-#' @param tbl A lazily evaluated table from dbplyr.
-#' @inheritParams doc_sqlite_connection
+#' @inheritParams doc_common_args
 #' @param with_info Which info should `tbl` be augmented with?
 #' A column vector with the following options, specified as strings:
 #' - affiliation: joins information on unit-year for units in `on_col`

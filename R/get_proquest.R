@@ -1,6 +1,6 @@
 #' Source ProQuest data on advisors or graduates.
 #'
-#' @inheritParams doc_sqlite_connection
+#' @inheritParams doc_common_args
 #' @param from A string with options to be queried: "advisors" or "graduates".
 #' @param start_year Lowest graduation year to consider. Default: 1985.
 #' @param end_year Highest graduation year to consider. Default: 2005.

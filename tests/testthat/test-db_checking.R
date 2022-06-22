@@ -47,8 +47,8 @@ test_that("sqlite_master_to_df() works", {
 })
 
 test_that("has_idx() works", {
-  expect_true(has_idx(memcon, tbl = "table1", temp = T, on_cols = "a"))
-  expect_false(has_idx(memcon, tbl = "table2", temp = T,
+  expect_true(has_idx(memcon, on_tbl = "table1", temp = T, on_cols = "a"))
+  expect_false(has_idx(memcon, on_tbl = "table2", temp = T,
                        on_cols = "a", keep_unique = TRUE))
 })
 
@@ -59,7 +59,7 @@ test_that("get_tbl_idx() works", {
       idx_cols = "a"
     )
   )
-  expect_identical(get_tbl_idx(conn = memcon, tbl = "table1", temp = T),
+  expect_identical(get_tbl_idx(conn = memcon, on_tbl = "table1", temp = T),
                    expected_list)
 })
 
