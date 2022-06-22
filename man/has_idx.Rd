@@ -2,7 +2,7 @@
 % Please edit documentation in R/db_checking.R
 \name{has_idx}
 \alias{has_idx}
-\title{Check if a table has an index on some columns}
+\title{Check if a table has an index}
 \usage{
 has_idx(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE)
 }
@@ -24,7 +24,8 @@ temporary tables and indexes on them.}
 A logical.
 }
 \description{
-Check if a table has an index on some columns
+Check if the table holds an index on the specified columns
+and optionally check whether it is unique.
 }
 \details{
 The function only checks \emph{exact} matching of \code{on_cols}, that is, the

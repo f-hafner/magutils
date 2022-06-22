@@ -2,7 +2,7 @@
 % Please edit documentation in R/db_checking.R
 \name{get_tbl_idx}
 \alias{get_tbl_idx}
-\title{Extract the table indexes from a table}
+\title{Extract indexes from a table}
 \usage{
 get_tbl_idx(conn, on_tbl, temp = FALSE)
 }
@@ -21,12 +21,15 @@ A elements (top-level) of the list are named according to the name of the
 indexes in the database.
 Each element is a list with two entries:
 \itemize{
-\item \code{idx_unique}: A logical indicating whether the index is unique.
+\item \code{idx_unique}: A logical indicating whether the index satisfies the UNIQUE
+constraint as in \verb{CREATE UNIQUE INDEX}.
 \item \code{idx_cols}: A character vector with the index columns.
 }
 }
 \description{
-Extract the table indexes from a table
+Create a list of indexes from a table. The list reports on which columns the
+index exists and whether has the UNIQUE constraint. The function processes
+output from \code{\link{sqlite_master_to_df}}.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))

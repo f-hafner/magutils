@@ -1,9 +1,8 @@
 
-
-
 #' Generate the path to the example database
 #'
-#' Make it easy to access the database for examples.
+#' Make it easy to access the example database in the package for showing
+#' examples of function use in the documentation.
 #'
 #' @param file Name of sqlite database for examples.
 #'

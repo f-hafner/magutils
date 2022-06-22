@@ -13,7 +13,8 @@ db_example(file)
 A string with the path to the database.
 }
 \description{
-Make it easy to access the database for examples.
+Make it easy to access the example database in the package for showing
+examples of function use in the documentation.
 }
 \examples{
 db_example("AcademicGraph.sqlite")

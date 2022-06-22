@@ -18,7 +18,7 @@ A dataframe with type, name, tbl_name and sql statement
 from sqlite_master.
 }
 \description{
-Transform sqlite_master table to a dataframe.
+This is a wrapper to query sqlite_master from the sqlite database.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))

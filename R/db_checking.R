@@ -13,7 +13,11 @@
 #-----------------------------
 
 
-#' Extract the table indexes from a table
+#' Extract indexes from a table
+#'
+#' Create a list of indexes from a table. The list reports on which columns the
+#' index exists and whether has the UNIQUE constraint. The function processes
+#' output from \code{\link{sqlite_master_to_df}}.
 #'
 #' @inheritParams doc_common_args
 #' @param on_tbl The name of the table.
@@ -25,7 +29,8 @@
 #' A elements (top-level) of the list are named according to the name of the
 #' indexes in the database.
 #' Each element is a list with two entries:
-#' - `idx_unique`: A logical indicating whether the index is unique.
+#' - `idx_unique`: A logical indicating whether the index satisfies the UNIQUE
+#'     constraint as in `CREATE UNIQUE INDEX`.
 #' - `idx_cols`: A character vector with the index columns.
 #'
 #' @export
@@ -63,9 +68,10 @@ get_tbl_idx <- function(conn, on_tbl, temp = FALSE) {
 
 
 
-
-
-#' Check if a table has an index on some columns
+#' Check if a table has an index
+#'
+#' Check if the table holds an index on the specified columns
+#' and optionally check whether it is unique.
 #'
 #' @inheritParams doc_common_args
 #' @param on_tbl A table in the database.
@@ -107,6 +113,8 @@ has_idx <- function(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 }
 
 #' Transform sqlite_master table to a dataframe.
+#'
+#' This is a wrapper to query sqlite_master from the sqlite database.
 #'
 #' @inheritParams doc_common_args
 #' @inheritParams get_tbl_idx
@@ -155,12 +163,16 @@ tidy_string <- function(s) {
 
 #' Extract constituting columns from a "create index" statement
 #'
+#' This function takes a string from a SQL statement that creates an index
+#' on a table, and returns the columns that constitute the index.
+#'
 #' @param stmt A SQLite statement to create an index on a table on some columns.
 #' The function extracts the columns on which the index is created. As the
 #' example illustrates, "ASC" and "DESC" statements are removed.
 #'
 #' @return A character vector with the column names defining the index.
 #'
+#' @keywords internal
 #' @examples
 #' magutils:::get_idx_cols("CREATE INDEX idx1 ON mytable (col1 ASC, col2 ASC)")
 #' # gives  c("col1", "col2")

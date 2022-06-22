@@ -15,9 +15,11 @@ example illustrates, "ASC" and "DESC" statements are removed.}
 A character vector with the column names defining the index.
 }
 \description{
-Extract constituting columns from a "create index" statement
+This function takes a string from a SQL statement that creates an index
+on a table, and returns the columns that constitute the index.
 }
 \examples{
 magutils:::get_idx_cols("CREATE INDEX idx1 ON mytable (col1 ASC, col2 ASC)")
 # gives  c("col1", "col2")
 }
+\keyword{internal}
