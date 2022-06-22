@@ -20,3 +20,4 @@ Remove redundant white spaces and new lines
 \examples{
 magutils:::tidy_string("  some string     with  many   white spaces. ")
 }
+\keyword{internal}

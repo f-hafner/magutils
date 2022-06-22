@@ -22,5 +22,5 @@ This is a wrapper to query sqlite_master from the sqlite database.
 }
 \examples{
 conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-sqlite_master_to_df(conn)
+dplyr::glimpse(sqlite_master_to_df(conn))
 }
