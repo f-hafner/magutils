@@ -123,7 +123,7 @@ has_idx <- function(conn, on_tbl, on_cols, keep_unique = FALSE, temp = FALSE) {
 #'
 #' @examples
 #' conn <- connect_to_db(db_example("AcademicGraph.sqlite"))
-#' sqlite_master_to_df(conn)
+#' dplyr::glimpse(sqlite_master_to_df(conn))
 sqlite_master_to_df <- function(conn, temp = FALSE) {
 
   src_tbl <- "sqlite_master"
@@ -148,6 +148,8 @@ sqlite_master_to_df <- function(conn, temp = FALSE) {
 #' @return The string, with new lines and excess white spaces removed.
 #' Excess white spaces refer to both trailing and leading as well as
 #' multiple white spaces next to each other.
+#'
+#' @keywords internal
 #'
 #' @examples magutils:::tidy_string("  some string     with  many   white spaces. ")
 tidy_string <- function(s) {

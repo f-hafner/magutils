@@ -89,7 +89,7 @@ database with the necessary tables. Let’s load the database:</p>
 <code class="sourceCode R"><span class="va">db_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/db_example.html">db_example</a></span><span class="op">(</span><span class="st">"AcademicGraph.sqlite"</span><span class="op">)</span>
 <span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/connect_to_db.html">connect_to_db</a></span><span class="op">(</span><span class="va">db_file</span><span class="op">)</span>
 <span class="co">#&gt; The database connection is: </span>
-<span class="co">#&gt; src:  sqlite 3.38.5 [/tmp/RtmpMqSS6k/temp_libpath66e98fe8daaa/magutils/extdata/AcademicGraph.sqlite]</span>
+<span class="co">#&gt; src:  sqlite 3.38.5 [/tmp/RtmptPxKJr/temp_libpath72cc939d74f39/magutils/extdata/AcademicGraph.sqlite]</span>
 <span class="co">#&gt; tbls: author_coauthor, author_output, AuthorAffiliation, current_links,</span>
 <span class="co">#&gt;   current_links_advisors, FieldsOfStudy, FirstNamesGender, pq_advisors,</span>
 <span class="co">#&gt;   pq_authors, pq_fields_mag, pq_unis</span></code></pre></div>
@@ -233,69 +233,13 @@ functions.</p>
 <p>We can use the following query to see the specific contents of each
 table:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/sqlite_master_to_df.html">sqlite_master_to_df</a></span><span class="op">(</span>conn <span class="op">=</span> <span class="va">conn</span><span class="op">)</span>
-<span class="co">#&gt;     type                       name               tbl_name</span>
-<span class="co">#&gt; 1  table              current_links          current_links</span>
-<span class="co">#&gt; 2  index         idx_t_AuthorIdgoid          current_links</span>
-<span class="co">#&gt; 3  index                 idx_t_goid          current_links</span>
-<span class="co">#&gt; 4  table     current_links_advisors current_links_advisors</span>
-<span class="co">#&gt; 5  index      idx_cla_AuthorIdrelid current_links_advisors</span>
-<span class="co">#&gt; 6  index              idx_cla_relid current_links_advisors</span>
-<span class="co">#&gt; 7  table                 pq_authors             pq_authors</span>
-<span class="co">#&gt; 8  index             idx_pqaut_goid             pq_authors</span>
-<span class="co">#&gt; 9  index              idx_pqaut_uni             pq_authors</span>
-<span class="co">#&gt; 10 index            idx_pqaut_fname             pq_authors</span>
-<span class="co">#&gt; 11 table                pq_advisors            pq_advisors</span>
-<span class="co">#&gt; 12 index             idx_pqav_relid            pq_advisors</span>
-<span class="co">#&gt; 13 index            idx_pqadv_fname            pq_advisors</span>
-<span class="co">#&gt; 14 index            idx_pqadv_idpos            pq_advisors</span>
-<span class="co">#&gt; 15 table                    pq_unis                pq_unis</span>
-<span class="co">#&gt; 16 index                 idx_pqu_id                pq_unis</span>
-<span class="co">#&gt; 17 table           FirstNamesGender       FirstNamesGender</span>
-<span class="co">#&gt; 18 index          idx_fng_FirstName       FirstNamesGender</span>
-<span class="co">#&gt; 19 table              pq_fields_mag          pq_fields_mag</span>
-<span class="co">#&gt; 20 index                idx_pqfm_id          pq_fields_mag</span>
-<span class="co">#&gt; 21 index               idx_pqfm_fos          pq_fields_mag</span>
-<span class="co">#&gt; 22 table              FieldsOfStudy          FieldsOfStudy</span>
-<span class="co">#&gt; 23 index     idx_fos_FieldOfStudyId          FieldsOfStudy</span>
-<span class="co">#&gt; 24 table          AuthorAffiliation      AuthorAffiliation</span>
-<span class="co">#&gt; 25 index     idx_aa_AuthorAffilYear      AuthorAffiliation</span>
-<span class="co">#&gt; 26 index               idx_aa_Affil      AuthorAffiliation</span>
-<span class="co">#&gt; 27 table              author_output          author_output</span>
-<span class="co">#&gt; 28 index        idx_ao_AuthorIdYear          author_output</span>
-<span class="co">#&gt; 29 table            author_coauthor        author_coauthor</span>
-<span class="co">#&gt; 30 index idx_aco_AuthorIdCoAuthorId        author_coauthor</span>
-<span class="co">#&gt;                                                                                                                                             sql</span>
-<span class="co">#&gt; 1                   CREATE TABLE `current_links` (\n  `AuthorId` INTEGER,\n  `goid` INTEGER,\n  `link_score` REAL,\n  `iteration_id` INTEGER\n)</span>
-<span class="co">#&gt; 2                                 CREATE UNIQUE INDEX idx_t_AuthorIdgoid ON\n                            current_links (AuthorId ASC, goid ASC)</span>
-<span class="co">#&gt; 3                                                                                    CREATE UNIQUE INDEX idx_t_goid ON current_links (goid ASC)</span>
-<span class="co">#&gt; 4  CREATE TABLE `current_links_advisors` (\n  `AuthorId` INTEGER,\n  `relationship_id` TEXT,\n  `link_score` REAL,\n  `iteration_id` INTEGER\n)</span>
-<span class="co">#&gt; 5                                  CREATE UNIQUE INDEX idx_cla_AuthorIdrelid\n    ON current_links_advisors (AuthorId ASC, relationship_id ASC)</span>
-<span class="co">#&gt; 6                                                             CREATE UNIQUE INDEX idx_cla_relid on current_links_advisors (relationship_id ASC)</span>
-<span class="co">#&gt; 7                   CREATE TABLE `pq_authors` (\n  `goid` INTEGER,\n  `firstname` TEXT,\n  `degree_year` INTEGER,\n  `university_id` INTEGER\n)</span>
-<span class="co">#&gt; 8                                                                                   CREATE UNIQUE INDEX idx_pqaut_goid ON pq_authors (goid ASC)</span>
-<span class="co">#&gt; 9                                                                                  CREATE INDEX idx_pqaut_uni ON pq_authors (university_id ASC)</span>
-<span class="co">#&gt; 10                                                                                   CREATE INDEX idx_pqaut_fname ON pq_authors (firstname ASC)</span>
-<span class="co">#&gt; 11 CREATE TABLE `pq_advisors` (\n  `goid` INTEGER,\n  `position` INTEGER,\n  `lastname` TEXT,\n  `relationship_id` TEXT,\n  `firstname` TEXT\n)</span>
-<span class="co">#&gt; 12                                                                      CREATE UNIQUE INDEX idx_pqav_relid ON pq_advisors (relationship_id ASC)</span>
-<span class="co">#&gt; 13                                                                                  CREATE INDEX idx_pqadv_fname ON pq_advisors (firstname ASC)</span>
-<span class="co">#&gt; 14                                                                                       CREATE INDEX idx_pqadv_idpos ON pq_advisors (goid ASC)</span>
-<span class="co">#&gt; 15                                                                   CREATE TABLE `pq_unis` (\n  `university_id` INTEGER,\n  `location` TEXT\n)</span>
-<span class="co">#&gt; 16                                                                                CREATE UNIQUE INDEX idx_pqu_id ON pq_unis (university_id ASC)</span>
-<span class="co">#&gt; 17                              CREATE TABLE `FirstNamesGender` (\n  `FirstName` TEXT,\n  `PersonCount` INTEGER,\n  `ProbabilityFemale` REAL\n)</span>
-<span class="co">#&gt; 18                                                                           CREATE INDEX idx_fng_FirstName ON FirstNamesGender (FirstName ASC)</span>
-<span class="co">#&gt; 19                     CREATE TABLE `pq_fields_mag` (\n  `goid` INTEGER,\n  `position` INTEGER,\n  `mag_field0` INTEGER,\n  `fieldname` TEXT\n)</span>
-<span class="co">#&gt; 20                                                                  CREATE UNIQUE INDEX idx_pqfm_id on pq_fields_mag (goid ASC, mag_field0 ASC)</span>
-<span class="co">#&gt; 21                                                                                  CREATE INDEX idx_pqfm_fos on pq_fields_mag (mag_field0 ASC)</span>
-<span class="co">#&gt; 22                                                      CREATE TABLE `FieldsOfStudy` (\n  `FieldOfStudyId` INTEGER,\n  `NormalizedName` TEXT\n)</span>
-<span class="co">#&gt; 23                                            CREATE UNIQUE INDEX idx_fos_FieldOfStudyId\n                ON FieldsOfStudy (FieldOfStudyId ASC)</span>
-<span class="co">#&gt; 24                                   CREATE TABLE `AuthorAffiliation` (\n  `AuthorId` INTEGER,\n  `AffiliationId` INTEGER,\n  `Year` INTEGER\n)</span>
-<span class="co">#&gt; 25                                 CREATE UNIQUE INDEX idx_aa_AuthorAffilYear ON\n    AuthorAffiliation (AuthorId ASC, AffiliationId ASC, YEAR)</span>
-<span class="co">#&gt; 26                                                                           CREATE INDEX idx_aa_Affil ON AuthorAffiliation (AffiliationId ASC)</span>
-<span class="co">#&gt; 27      CREATE TABLE `author_output` (\n  `AuthorId` INTEGER,\n  `Year` INTEGER,\n  `PaperCount` INTEGER,\n  `TotalForwardCitations` INTEGER\n)</span>
-<span class="co">#&gt; 28                                                           CREATE UNIQUE INDEX idx_ao_AuthorIdYear ON\n    author_output (AuthorId ASC, YEAR)</span>
-<span class="co">#&gt; 29                                                           CREATE TABLE `author_coauthor` (\n  `AuthorId` INTEGER,\n  `CoAuthorId` INTEGER\n)</span>
-<span class="co">#&gt; 30                                        CREATE UNIQUE INDEX idx_aco_AuthorIdCoAuthorId ON\n    author_coauthor (AuthorId ASC, CoAuthorId ASC)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="fu"><a href="../reference/sqlite_master_to_df.html">sqlite_master_to_df</a></span><span class="op">(</span>conn <span class="op">=</span> <span class="va">conn</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Rows: 30</span>
+<span class="co">#&gt; Columns: 4</span>
+<span class="co">#&gt; $ type     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "table", "index", "index", "table", "index", "index", "table"…</span>
+<span class="co">#&gt; $ name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "current_links", "idx_t_AuthorIdgoid", "idx_t_goid", "current…</span>
+<span class="co">#&gt; $ tbl_name <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "current_links", "current_links", "current_links", "current_l…</span>
+<span class="co">#&gt; $ sql      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "CREATE TABLE `current_links` (\n  `AuthorId` INTEGER,\n  `go…</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -334,7 +278,7 @@ given the first name of the person.</li>
 <code class="sourceCode R"><span class="va">advisors</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_proquest.html">get_proquest</a></span><span class="op">(</span><span class="va">conn</span>, from <span class="op">=</span> <span class="st">"advisors"</span><span class="op">)</span> 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">advisors</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [6 x 4]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmpMqSS6k/temp_libpath66e98fe8daaa/magutils/extdata/AcademicGraph.sqlite]</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmptPxKJr/temp_libpath72cc939d74f39/magutils/extdata/AcademicGraph.sqlite]</span></span>
 <span class="co">#&gt;        goid position relationship_id gender</span>
 <span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  89<span style="text-decoration: underline;">188</span>005        0 89188005_0      <span style="color: #BB0000;">NA</span>    </span>
@@ -360,7 +304,7 @@ the links from <code>current_links_advisors</code>.</p>
 <code class="sourceCode R"><span class="va">links</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_links.html">get_links</a></span><span class="op">(</span><span class="va">conn</span>, from <span class="op">=</span> <span class="st">"graduates"</span>, lazy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">links</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [6 x 3]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmpMqSS6k/temp_libpath66e98fe8daaa/magutils/extdata/AcademicGraph.sqlite]</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmptPxKJr/temp_libpath72cc939d74f39/magutils/extdata/AcademicGraph.sqlite]</span></span>
 <span class="co">#&gt;     AuthorId      goid link_score</span>
 <span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  218<span style="text-decoration: underline;">478</span>716 194<span style="text-decoration: underline;">032</span>064      0.996</span>
@@ -374,7 +318,7 @@ the links from <code>current_links_advisors</code>.</p>
 <span class="co">#&gt; Note: At the moment, using a link score below 0.95 for advisors can result in suspiciously many false positives. Carefully inspect the linked records you use.</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">links</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [6 x 3]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmpMqSS6k/temp_libpath66e98fe8daaa/magutils/extdata/AcademicGraph.sqlite]</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmptPxKJr/temp_libpath72cc939d74f39/magutils/extdata/AcademicGraph.sqlite]</span></span>
 <span class="co">#&gt;     AuthorId relationship_id link_score</span>
 <span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span> <span style="text-decoration: underline;">1</span>584<span style="text-decoration: underline;">137</span>904 1002730962_0         0.995</span>
@@ -410,7 +354,7 @@ AuthorId, as the following example illustrates:</p>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">graduates_affiliation</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #949494;"># Source:   SQL [6 x 5]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmpMqSS6k/temp_libpath66e98fe8daaa/magutils/extdata/AcademicGraph.sqlite]</span></span>
+<span class="co">#&gt; <span style="color: #949494;"># Database: sqlite 3.38.5 [/tmp/RtmptPxKJr/temp_libpath72cc939d74f39/magutils/extdata/AcademicGraph.sqlite]</span></span>
 <span class="co">#&gt;     AuthorId      goid link_score AffiliationId  Year</span>
 <span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  218<span style="text-decoration: underline;">478</span>716 194<span style="text-decoration: underline;">032</span>064      0.996      22<span style="text-decoration: underline;">759</span>111  <span style="text-decoration: underline;">1</span>996</span>
