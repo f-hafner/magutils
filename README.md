@@ -35,7 +35,7 @@ library(magutils)
 db_file <- db_example("AcademicGraph.sqlite")
 conn <- connect_to_db(db_file)
 #> The database connection is: 
-#> src:  sqlite 3.38.5 [/tmp/RtmpOOS3Cx/temp_libpath3eff04106586a/magutils/extdata/AcademicGraph.sqlite]
+#> src:  sqlite 3.39.3 [/tmp/RtmpfnS8S0/temp_libpath1e5445e211e0e/magutils/extdata/AcademicGraph.sqlite]
 #> tbls: author_coauthor, author_output, AuthorAffiliation, current_links,
 #>   current_links_advisors, FieldsOfStudy, FirstNamesGender, pq_advisors,
 #>   pq_authors, pq_fields_mag, pq_unis

@@ -46,7 +46,10 @@ get_proquest <- function(conn, from, start_year = 1985, end_year = 2005, ...) {
   "
   us_universities <- dplyr::tbl(conn, dbplyr::sql(query_keep_us))
 
+  special_degrees <- c("Psy.D.", "Ed.D.", "D.Ed.") # relevant for psyschology
+
   graduates <- dplyr::tbl(conn, "pq_authors") %>%
+    dplyr::filter(!(.data$degree_level %in% special_degrees)) %>%
     dplyr::inner_join(us_universities, by = "university_id") %>%
     dplyr::filter(.data$degree_year >= start_year
                   & .data$degree_year <= end_year)

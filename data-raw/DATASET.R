@@ -96,7 +96,7 @@ purrr::map(idx_cla,
 ## 2. proquest authors / advisors
 
 qry <- paste0("
-  SELECT goid, firstname, degree_year, university_id
+  SELECT goid, firstname, degree_year, degree_level, university_id
   FROM pq_authors
   WHERE goid IN (",
   paste(pq_ids, collapse = ", "), ")"
