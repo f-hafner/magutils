@@ -43,7 +43,9 @@ define_field <- function(tbl, conn, from, ...) {
   if (from == "graduates") {
     person_id <- "goid"
     person_field <- dplyr::tbl(conn, "pq_fields_mag") %>%
-      dplyr::filter(.data$position == 0) %>%
+      dplyr::group_by(.data[[person_id]]) %>%
+      dplyr::filter(.data$position == min(.data$position)) %>%
+      dplyr::ungroup() %>%
       dplyr::select(.data[[person_id]],
                     fieldname_pq = .data$fieldname,
                     .data$mag_field0)
