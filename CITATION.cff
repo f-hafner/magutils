@@ -1,0 +1,27 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: mag_utils
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Flavio
+    family-names: Hafner
+    orcid: 'https://orcid.org/0009-0000-5893-9000'
+  - given-names: Christoph
+    family-names: Hedtrich
+    email: christophhedtrich@gmail.com
+repository-code: 'https://github.com/f-hafner/magutils'
+url: 'https://f-hafner.github.io/magutils/'
+abstract: >+
+  magutils makes it easy to load and extract data from a
+  database with records from Microsoft Academic Graph and
+  ProQuest Dissertations. It works on top of the database
+  created by https://github.com/f-hafner/mag_sample
+keywords:
+  - bibliometrics
+  - sql
+license: MIT
