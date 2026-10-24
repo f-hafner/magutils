@@ -2,7 +2,16 @@ Package: magutils
 Title: Utilities for loading data from MAG-Proquest database
 Version: 0.0.0.9000
 Authors@R: 
-    person("Flavio", "Hafner", , "hafner.flavio@gmail.com", role = c("aut", "cre"))
+    c(
+    person("Flavio", "Hafner", , 
+            "hafner.flavio@gmail.com", 
+            role = c("aut", "cre")
+            ),
+    person("Christoph", "Hedtrich", ,
+            "christophhedtrich@gmail.com", 
+            role=c("aut")
+            )
+    )
 Description: Functions to extract, transform and load data on PhD and their
     research career from links between MAG and ProQuest.
 License: MIT + file LICENSE
